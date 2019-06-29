@@ -59,7 +59,7 @@ export default {
                 backgroundColor: "darkOrange",
             },
             "@media screen and (max-width: 750px)": {
-                top: "40px",
+                top: "50px",
             },
         },
         left: {
