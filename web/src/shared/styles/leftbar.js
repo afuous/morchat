@@ -56,8 +56,11 @@ export default {
             borderRadius: "20px",
             boxShadow: "0px 2px 8px -4px black",
             ":hover": {
-                backgroundColor: "darkOrange"
-            }
+                backgroundColor: "darkOrange",
+            },
+            "@media screen and (max-width: 750px)": {
+                top: "40px",
+            },
         },
         left: {
             open: leftbarWidth + 10 + "px",
