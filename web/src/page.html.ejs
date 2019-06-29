@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+
+<html>
+
+    <head>
+
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+        <title>MorChat - <%= page %></title>
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:700,300,400" rel="stylesheet" type="text/css">
+        <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" type="text/css">
+        <link href="https://fonts.googleapis.com/css?family=Exo+2:400,300,200" rel="stylesheet" type="text/css">
+        <link href="https://fonts.googleapis.com/css?family=Titillium+Web" rel="stylesheet" type="text/css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" />
+
+        <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+        <% if (page === "Home") { %>
+            <script src="/nicedit.js" type="text/javascript"></script>
+        <% } %>
+
+        <% var pages = ["Login", "Signup", "Fp"]
+        if (pages.indexOf(page) === -1) { %>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/jBox/0.3.2/jBox.js"></script>
+        <% } %>
+
+        <style type="text/css">
+            html, body {
+                height: 100%;
+            }
+            .jBox-Notice {
+                font-family: 'exo 2', sans-serif;
+            }
+            .jBox-Notice .jBox-container {
+                box-shadow: 0 2px 3px rgba(0, 0, 0, .2);
+                color: black;
+                background: #ffc547;
+            }
+            .jBox-Notice .jBox-content {
+                padding: 5px 20px 12px 20px;
+                font-weight: 100;
+            }
+            .jBox-Notice .jBox-title {
+                padding: 8px 20px 0;
+                font-weight: 300;
+                font-size: 17px;
+            }
+            .jBox-Notice:hover {
+                cursor: pointer;
+            }
+        </style>
+
+    </head>
+
+    <body
+        <% if (page != "Login") { %>
+            style="background-color: #E9E9E9;"
+        <% } %>
+    >
+        <% style="height: 100%;" %>
+        <div id="allContent"></div>
+
+        <script type="text/javascript">
+            window.__userInfo = <%- JSON.stringify(userInfo || null) %>;
+            window.__options = <%- JSON.stringify(options || null) %>;
+        </script>
+
+        <script src="/js/vendor.js"></script>
+        <script src="/js/<%= page %>.js"></script>
+
+        <script type="text/javascript">
+            // each root jsx file has to define the global variable __pageInit
+            // it must contain Page, React, and ReactDOM
+            // global variables ftw
+            window.__pageInit.ReactDOM.render(
+                window.__pageInit.React.createElement(
+                    window.__pageInit.Page,
+                    null
+                ),
+                document.getElementById("allContent")
+            );
+        </script>
+
+    </body>
+
+</html>
