@@ -3,6 +3,9 @@
   "version": "1.0.0-beta.4",
   "description": "The server for MorChat",
   "main": "run.js",
+  "scripts": {
+    "start": "node run.js"
+  },
   "dependencies": {
     "autolinker": "^1.4.2",
     "bcryptjs": "^2.4.3",
