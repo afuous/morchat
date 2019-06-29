@@ -4,7 +4,6 @@ let mongoose = require("mongoose");
 let bcrypt = require("bcryptjs");
 let Schema = mongoose.Schema;
 let ObjectId = Schema.Types.ObjectId;
-let Promise = require("bluebird");
 let SALT_WORK_FACTOR = 10;
 
 function createToken(size) {

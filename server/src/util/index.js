@@ -5,7 +5,6 @@
  */
 let fs = require("fs");
 let autolinker = require("autolinker");
-let Promise = require("bluebird");
 let mongoose = require("mongoose");
 let session = require("express-session");
 let MongoStore = require("connect-mongo")(session);
@@ -13,8 +12,7 @@ let config = require("./config");
 
 let util = {};
 
-util.handler = function(generator) {
-    let func = Promise.coroutine(generator);
+util.handler = function(func) {
     return function(req, res, next) {
         return func
             .apply(null, arguments)

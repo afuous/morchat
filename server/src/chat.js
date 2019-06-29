@@ -2,7 +2,6 @@
 
 let express = require("express");
 let ObjectId = require("mongoose").Types.ObjectId;
-let Promise = require("bluebird");
 let util = require("./util");
 
 let handler = util.handler;
@@ -27,11 +26,11 @@ router.post("/chats", checkBody(types.union([{
     isAllUsers: types.value(false),
     users: [types.objectId(User)],
     name: types.string,
-}])), requireLogin, handler(function*(req, res) {
+}])), requireLogin, handler(async function(req, res) {
 
     if (req.body.isTwoPeople) {
 
-        let otherUser = yield User.findOne({
+        let otherUser = await User.findOne({
             _id: req.body.otherUserId,
         });
         if (!otherUser) {
@@ -39,14 +38,14 @@ router.post("/chats", checkBody(types.union([{
         }
 
         // check to see if already exists
-        if ((yield Chat.count({
+        if ((await Chat.count({
             isTwoPeople: true,
             users: [req.user._id, req.body.otherUserId], // TODO: does this need to be an or with both orders
         })) > 0) {
             return res.status(400).end("This chat already exists");
         }
 
-        let chat = yield Chat.create({
+        let chat = await Chat.create({
             isTwoPeople: true,
             isAllUsers: false,
             users: [
@@ -57,18 +56,18 @@ router.post("/chats", checkBody(types.union([{
 
         chat.users = [req.user, otherUser];
 
-        yield sio.createChat(chat);
+        await sio.createChat(chat);
         res.json(chat);
 
     } else if (req.body.isAllUsers) {
 
-        let chat = yield Chat.create({
+        let chat = await Chat.create({
             isAllUsers: true,
             isTwoPeople: false,
             name: req.body.name,
         });
 
-        yield sio.createChat(chat);
+        await sio.createChat(chat);
         res.json(chat);
 
     } else {
@@ -82,7 +81,7 @@ router.post("/chats", checkBody(types.union([{
             // TODO: get rid of this...
         }
 
-        let users = yield User.find({
+        let users = await User.find({
             _id: {
                 $in: req.body.users,
             },
@@ -92,7 +91,7 @@ router.post("/chats", checkBody(types.union([{
             return res.status(400).end("There is an invalid user id");
         }
 
-        let chat = yield Chat.create({
+        let chat = await Chat.create({
             isTwoPeople: false,
             isAllUsers: false,
             name: req.body.name,
@@ -101,16 +100,16 @@ router.post("/chats", checkBody(types.union([{
 
         chat.users = users;
 
-        yield sio.createChat(chat);
+        await sio.createChat(chat);
         res.json(chat);
     }
 
 }));
 
-router.get("/chats", checkBody(), requireLogin, handler(function*(req, res) {
+router.get("/chats", checkBody(), requireLogin, handler(async function(req, res) {
 
     // find a chat that has said user as a member
-    let chats = yield Chat.find({
+    let chats = await Chat.find({
         users: req.user,
     }, {
         _id: 1,
@@ -128,9 +127,9 @@ router.get("/chats", checkBody(), requireLogin, handler(function*(req, res) {
     // ^ the code above gets the latest message from the chat (for previews in iOS and Android) and orders the list by most recent.
 
     // for (let chat of chats) {
-    //     yield chat.updateUnread();
+    //     await chat.updateUnread();
     // }
-    yield Promise.all(chats.map(chat => chat.updateUnread()));
+    await Promise.all(chats.map(chat => chat.updateUnread()));
 
     res.json(chats);
 
@@ -138,12 +137,12 @@ router.get("/chats", checkBody(), requireLogin, handler(function*(req, res) {
 
 router.get("/chats/id/:chatId/messages", checkBody({
     skip: types.string,
-}), requireLogin, handler(function*(req, res) {
+}), requireLogin, handler(async function(req, res) {
 
     let skip = parseInt(req.query.skip);
 
     // loads 20 messages after skip many messages. example: if skip is 0, it loads messages 0-19, if it"s 20, loads 20-39, etc.
-    let chat = yield Chat.findOne({
+    let chat = await Chat.findOne({
         _id: req.params.chatId,
         users: req.user._id,
     })
@@ -156,14 +155,14 @@ router.get("/chats/id/:chatId/messages", checkBody({
 
 }));
 
-router.get("/chats/id/:chatId/users", checkBody(), requireLogin, handler(function*(req, res) {
+router.get("/chats/id/:chatId/users", checkBody(), requireLogin, handler(async function(req, res) {
 
-    let chat = yield Chat.findOne({
+    let chat = await Chat.findOne({
         _id: req.params.chatId,
         users: req.user._id,
     });
 
-    let users = yield User.find({
+    let users = await User.find({
         _id: {
             $in: chat.users,
         },
@@ -175,13 +174,13 @@ router.get("/chats/id/:chatId/users", checkBody(), requireLogin, handler(functio
 
 router.put("/chats/id/:chatId/name", checkBody({
     newName: types.string,
-}), requireLogin, handler(function*(req, res) {
+}), requireLogin, handler(async function(req, res) {
 
     if (req.body.newName.length >= 20) {
         return res.status(400).end("Chat name has to be 19 characters or fewer");
     }
 
-    let chat = yield Chat.findOne({
+    let chat = await Chat.findOne({
         _id: req.params.chatId,
         users: req.user._id,
     });
@@ -196,9 +195,9 @@ router.put("/chats/id/:chatId/name", checkBody({
 
     chat.name = req.body.newName;
 
-    yield chat.save();
+    await chat.save();
 
-    yield sio.renameChat(chat);
+    await sio.renameChat(chat);
     res.end();
 
 }));

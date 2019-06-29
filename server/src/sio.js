@@ -1,7 +1,6 @@
 "use strict";
 
 let ObjectId = require("mongoose").Types.ObjectId;
-let Promise = require("bluebird");
 
 let util = require("./util");
 
@@ -15,7 +14,7 @@ let onlineClients = {};
 
 let sio = {};
 
-let emitToUsers = Promise.coroutine(function*(userIds, name, data, except) {
+let emitToUsers = async function(userIds, name, data, except) {
     except = except && except.toString();
     for (let userId of userIds) {
         if (userId in onlineClients && userId != except) {
@@ -24,13 +23,13 @@ let emitToUsers = Promise.coroutine(function*(userIds, name, data, except) {
             }
         }
     }
-});
+};
 
 sio.onConnection = function(socket) {
 
-    util.sessionMiddleware(socket.request, socket.request.res, Promise.coroutine(function*() {
+    util.sessionMiddleware(socket.request, socket.request.res, async function() {
 
-        let sess = socket.request.session.userId && (yield User.findOne({
+        let sess = socket.request.session.userId && (await User.findOne({
             _id: socket.request.session.userId
         }));
         if (sess) {
@@ -38,7 +37,7 @@ sio.onConnection = function(socket) {
 
                 if (!(sess._id in onlineClients)) { // later
 
-                    let chats = yield Chat.find({
+                    let chats = await Chat.find({
                         users: sess._id,
                     }, {
                         _id: 1,
@@ -100,13 +99,13 @@ sio.onConnection = function(socket) {
             }
         });
 
-        socket.on("sendMessage", util.handler(function*(data) {
+        socket.on("sendMessage", async function(data) {
 
             let now = new Date();
             let content = util.normalizeDisplayedText(data.content);
             let chatId = data.chatId;
 
-            yield Chat.updateOne({
+            await Chat.updateOne({
                 _id: chatId,
                 users: sess._id,
             }, {
@@ -129,7 +128,7 @@ sio.onConnection = function(socket) {
                 timestamp: now,
             };
 
-            let chat = yield Chat.findOne({
+            let chat = await Chat.findOne({
                 _id: chatId,
             }, {
                 users: 1,
@@ -150,7 +149,7 @@ sio.onConnection = function(socket) {
                 }
             }
 
-            yield Promise.all(promises);
+            await Promise.all(promises);
 
             let chatData = {
                 chatId: chatId,
@@ -176,16 +175,16 @@ sio.onConnection = function(socket) {
                 content: content,
             });
 
-        }));
+        });
 
-        socket.on("read message", util.handler(function*(data) {
+        socket.on("read message", async function(data) {
             let chatId = data.chatId;
 
-            let chat = yield Chat.findOne({
+            let chat = await Chat.findOne({
                 _id: chatId,
             })
 
-            yield Chat.updateOne({
+            await Chat.updateOne({
                 $and: [
                     { _id: chatId },
                     { "unreadMessages.user": sess._id },
@@ -193,7 +192,7 @@ sio.onConnection = function(socket) {
             }, {
                 $set: { "unreadMessages.$.number": 0 },
             })
-        }))
+        })
 
         // TODO: if a user has multiple clients and sends a message, display sent message on all clients
 
@@ -221,22 +220,22 @@ sio.onConnection = function(socket) {
             }
         });
 
-    }));
+    });
 
 };
 
-sio.createChat = Promise.coroutine(function*(chat) {
-    return yield emitToUsers(chat.users.map(user => user._id), "addChat", {
+sio.createChat = async function(chat) {
+    return await emitToUsers(chat.users.map(user => user._id), "addChat", {
         chat: chat,
     });
-});
+};
 
-sio.renameChat = Promise.coroutine(function*(chat) {
-    return yield emitToUsers(chat.users, "renameChat", {
+sio.renameChat = async function(chat) {
+    return await emitToUsers(chat.users, "renameChat", {
         chatId: chat._id,
         name: chat.name,
     });
-});
+};
 
 
 module.exports = sio;

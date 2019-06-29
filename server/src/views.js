@@ -1,7 +1,6 @@
 "use strict";
 
 let express = require("express");
-let Promise = require("bluebird");
 let fs = require("fs");
 let util = require("./util");
 let handler = util.handler;
@@ -20,21 +19,21 @@ let pages = {
     allUsers: "AllUsers",
 };
 
-let renderPage = Promise.coroutine(function*(res, page, user, options) {
+let renderPage = async function(res, page, user, options) {
     res.render(webDir + "/src/page.html.ejs", {
         options: options || {},
         userInfo: user,
         page: page,
     });
-});
+};
 
 for (let page in pages) {
-    router.get("/" + page, handler(function*(req, res) {
+    router.get("/" + page, handler(async function(req, res) {
         renderPage(res, pages[page], req.user);
     }));
 }
 
-router.get("/profiles/id/:userId", handler(function*(req, res) {
+router.get("/profiles/id/:userId", handler(async function(req, res) {
     renderPage(res, "User", req.user, {
         userId: req.params.userId,
     });

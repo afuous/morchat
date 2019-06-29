@@ -6,16 +6,12 @@ let express = require("express");
 let fs = require("fs");
 let mongoose = require("mongoose");
 let ObjectId = mongoose.Types.ObjectId;
-let Promise = require("bluebird");
 let bodyParser = require("body-parser");
 let compression = require("compression");
 let util = require("./util");
 let User = require("./models/User");
 let sio = require("./sio");
 let config = require("./util/config");
-
-Promise.promisifyAll(util);
-Promise.promisifyAll(fs);
 
 mongoose.connect("mongodb://" + config.dbHost + ":" + config.dbPort + "/" + config.dbName, { useNewUrlParser: true });
 
@@ -35,10 +31,10 @@ app.use(compression({
 
 app.use(util.sessionMiddleware);
 
-app.use(Promise.coroutine(function*(req, res, next) {
+app.use(async function(req, res, next) {
     if (req.session && req.session.userId) {
         try {
-            let user = yield User.findOne({
+            let user = await User.findOne({
                 _id: req.session.userId,
             });
             req.user = user;
@@ -51,7 +47,7 @@ app.use(Promise.coroutine(function*(req, res, next) {
     } else {
         next();
     }
-}));
+});
 
 let webDir = require("path").join(__dirname, "../../web");
 let publicDir = webDir + "/public";

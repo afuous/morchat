@@ -1,7 +1,6 @@
 "use strict";
 
 let mongoose = require("mongoose");
-let Promise = require("bluebird");
 
 let Schema = mongoose.Schema;
 let ObjectId = Schema.Types.ObjectId;
@@ -44,14 +43,7 @@ let chatSchema = new Schema({
     updated_at: Date,
 });
 
-let coroutine = function(generator) {
-    let func = Promise.coroutine(generator);
-    return function(next) {
-        return func.bind(this)(next);
-    };
-};
-// TODO: this was the strange coroutine not Promise.coroutine, ?
-chatSchema.pre("save", coroutine(function*(next) {
+chatSchema.pre("save", async function(next) {
     let now = new Date();
     if (!this.unchangedUpdatedAt) {
         this.updated_at = now;
@@ -60,12 +52,12 @@ chatSchema.pre("save", coroutine(function*(next) {
         this.created_at = now;
     }
     if (this.isNew) {
-        yield this.updateUnread();
+        await this.updateUnread();
     }
     next();
-}));
+});
 
-chatSchema.methods.updateUnread = Promise.coroutine(function*(userId) {
+chatSchema.methods.updateUnread = async function(userId) {
     if (userId) {
         if (this.unreadMessages.findIndex(elem =>
             elem.user.toString() === userId.toString()) === -1
@@ -75,7 +67,7 @@ chatSchema.methods.updateUnread = Promise.coroutine(function*(userId) {
     } else {
         let users;
         if (this.isAllUsers) {
-            users = yield User.find();
+            users = await User.find();
         } else {
             users = this.users;
         }
@@ -89,7 +81,7 @@ chatSchema.methods.updateUnread = Promise.coroutine(function*(userId) {
     }
     this.unchangedUpdatedAt = true;
     // this.save();
-});
+};
 
 let Chat = mongoose.model("Chat", chatSchema);
 

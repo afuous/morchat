@@ -2,7 +2,6 @@
 
 let express = require("express");
 let ObjectId = require("mongoose").Types.ObjectId;
-let Promise = require("bluebird");
 let util = require("./util");
 
 let handler = util.handler;
@@ -19,9 +18,9 @@ router.post("/login", checkBody({
     emailOrUsername: types.string,
     password: types.string,
     mobileDeviceToken: types.maybe(types.string),
-}), handler(function*(req, res) {
+}), handler(async function(req, res) {
 
-    let user = yield User.findOne({
+    let user = await User.findOne({
         $or: [{
             username: req.body.emailOrUsername,
         }, {
@@ -29,7 +28,7 @@ router.post("/login", checkBody({
         }],
     }).select("+password");
 
-    if (!user || !(yield user.comparePassword(req.body.password))) {
+    if (!user || !(await user.comparePassword(req.body.password))) {
         return res.status(400).end("Invalid login credentials");
     }
 
@@ -37,7 +36,7 @@ router.post("/login", checkBody({
         && user.mobileDeviceTokens.indexOf(req.body.mobileDeviceToken) === -1
     ) {
         user.mobileDeviceTokens.push(req.body.mobileDeviceToken);
-        yield user.save();
+        await user.save();
     }
 
     delete user.password;
@@ -51,7 +50,7 @@ router.post("/login", checkBody({
 
 router.post("/logout", checkBody({
     mobileDeviceToken: types.maybe(types.string),
-}), requireLogin, handler(function*(req, res) {
+}), requireLogin, handler(async function(req, res) {
     // destroy user session cookie
     req.session.destroy(function(err) {
         if (err) {
@@ -80,7 +79,7 @@ router.post("/users", checkBody({
     lastname: types.string,
     email: types.string,
     phone: types.string,
-}), handler(function*(req, res) {
+}), handler(async function(req, res) {
 
     // capitalize names
     // req.body.firstname = req.body.firstname.capitalize();
@@ -99,7 +98,7 @@ router.post("/users", checkBody({
 
     // TODO: is this necessary with the unique thing in User.js?
     // check if a user with either same username, email, or phone already exists
-    let same = yield User.findOne({
+    let same = await User.findOne({
         $or: [{
             username: req.body.username,
         }, {
@@ -128,14 +127,14 @@ router.post("/users", checkBody({
 
     let user;
     try {
-        user = yield User.create(userInfo);
+        user = await User.create(userInfo);
     } catch (err) {
         console.log(err)
         return res.status(400).end("Invalid user info");
     }
 
-    // let emailToken = yield user.assignEmailVerif();
-    // yield util.mail.sendEmail({
+    // let emailToken = await user.assignEmailVerif();
+    // await util.mail.sendEmail({
     //     to: req.body.email,
     //     subject: "MorTeam Email Verification",
     //     html: "Welcome to MorTeam. Please verify your email by going to https://morteam.com/users/token/" + emailToken + "/verify/",
@@ -145,9 +144,9 @@ router.post("/users", checkBody({
 
 }));
 
-router.get("/users", checkBody(), requireLogin, handler(function*(req, res) {
+router.get("/users", checkBody(), requireLogin, handler(async function(req, res) {
 
-    let users = yield User.find({
+    let users = await User.find({
         team: req.user.team,
     });
 
@@ -155,9 +154,9 @@ router.get("/users", checkBody(), requireLogin, handler(function*(req, res) {
 
 }));
 
-router.get("/users/id/:userId", checkBody(), requireLogin, handler(function*(req, res) {
+router.get("/users/id/:userId", checkBody(), requireLogin, handler(async function(req, res) {
 
-    let user = yield User.findOne({
+    let user = await User.findOne({
         _id: req.params.userId
     });
 
@@ -167,13 +166,13 @@ router.get("/users/id/:userId", checkBody(), requireLogin, handler(function*(req
 
 router.get("/users/search", checkBody({
     search: types.string,
-}), requireLogin, handler(function*(req, res) {
+}), requireLogin, handler(async function(req, res) {
 
     let regexString = String(req.query.search).trim().replace(/\s/g, "|");
     let re = new RegExp(regexString, "ig");
 
     // find maximum of 10 users that match the search criteria
-    let users = yield User.find({
+    let users = await User.find({
         team: req.user.team,
         $or: [{
             firstname: re,
@@ -189,20 +188,20 @@ router.get("/users/search", checkBody({
 router.put("/password", checkBody({
     oldPassword: types.string,
     newPassword: types.string,
-}), requireLogin, handler(function*(req, res) {
+}), requireLogin, handler(async function(req, res) {
 
-    let user = yield User.findOne({
+    let user = await User.findOne({
         _id: req.user._id
     }, "+password");
 
     // check if old password is correct
-    if (!(yield user.comparePassword(req.body.oldPassword))) {
+    if (!(await user.comparePassword(req.body.oldPassword))) {
         return res.status(403).end("Your old password is incorrect");
     }
 
     // set and save new password (password is automatically encrypted. see /models/User.js)
     user.password = req.body.newPassword;
-    yield user.save();
+    await user.save();
     // TODO: there should be a method on user to create a new encrypted password instead of doing it like this
 
     res.end();
@@ -214,7 +213,7 @@ router.put("/profile", checkBody({
     lastname: types.string,
     email: types.string,
     phone: types.string,
-}), requireLogin, handler(function*(req, res) {
+}), requireLogin, handler(async function(req, res) {
 
     if (!util.validateEmail(req.body.email)) {
         return res.status(400).end("Invalid email address");
@@ -228,22 +227,22 @@ router.put("/profile", checkBody({
     req.user.email = req.body.email;
     req.user.phone = req.body.phone;
 
-    yield req.user.save();
+    await req.user.save();
 
     res.json(req.user);
 
 }));
 
 // get information about the currently logged in user
-router.get("/users/self", checkBody(), requireLogin, handler(function*(req, res) {
+router.get("/users/self", checkBody(), requireLogin, handler(async function(req, res) {
     res.json(req.user);
 }));
 
 router.post("/forgotPassword", checkBody({
     emailOrUsername: types.string,
-}), handler(function*(req, res) {
+}), handler(async function(req, res) {
 
-    let user = yield User.findOne({
+    let user = await User.findOne({
         $or: [{
             email: req.body.emailOrUsername,
         }, {
@@ -255,8 +254,8 @@ router.post("/forgotPassword", checkBody({
         return res.status(400).end("User not found");
     }
 
-    let newPassword = yield user.assignNewPassword();
-    yield user.save();
+    let newPassword = await user.assignNewPassword();
+    await user.save();
 
     // TODO: we are emailing passwords in plaintext
     // they are temporary passwords but still
@@ -264,7 +263,7 @@ router.post("/forgotPassword", checkBody({
     // should be an access token instead of the actual password
 
     // email user new password
-    yield util.mail.sendEmail({
+    await util.mail.sendEmail({
         to: user.email,
         subject: "New MorTeam Password Request",
         html: "It seems like you requested to reset your password. Your new password is " + newPassword + ". Feel free to reset it after you log in.",
@@ -274,9 +273,9 @@ router.post("/forgotPassword", checkBody({
 
 }));
 
-router.put("/users/token/:emailToken/verify", checkBody(), handler(function*(req, res) {
+router.put("/users/token/:emailToken/verify", checkBody(), handler(async function(req, res) {
 
-    let user = yield User.findOneAndUpdate({
+    let user = await User.findOneAndUpdate({
         email_token: req.params.emailToken,
     }, {
         $set: { email_confirmed: true },
