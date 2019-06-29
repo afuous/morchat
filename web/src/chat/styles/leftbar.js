@@ -16,9 +16,10 @@ export default {
     },
     searchLi: {
         borderBottom: "1px solid black",
+        textAlign: "center"
     },
     searchBox: {
-        width: "100%",
+        width: "95%",
         backgroundColor: selectedColor,
         fontSize: "20px",
         borderRadius: "15px",
