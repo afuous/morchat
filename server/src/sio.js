@@ -102,7 +102,7 @@ sio.onConnection = function(socket) {
         socket.on("sendMessage", async function(data) {
 
             let now = new Date();
-            let content = util.normalizeDisplayedText(data.content);
+            let content = util.removeHTML(data.content);
             let chatId = data.chatId;
 
             await Chat.updateOne({

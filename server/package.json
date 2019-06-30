@@ -7,7 +7,6 @@
     "start": "node run.js"
   },
   "dependencies": {
-    "autolinker": "^1.4.2",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.17.1",
     "compression": "^1.6.2",

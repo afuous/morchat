@@ -8,6 +8,7 @@ import { chatItem as styles } from "~/chat/styles/middle";
 import { fullName, currentUser } from "~/util";
 import { allowOnlyTags } from "~/util/component";
 import { parseDateAndTime } from "~/util/date";
+import { link } from "autolinker";
 
 const filterMessage = (content) => (
     allowOnlyTags(["a", "br"], content)
@@ -41,7 +42,7 @@ export default class MessageItem extends React.PureComponent {
                             message.isLoading ? styles.selfBubbleLoading : styles.selfBubble
                         }
                     >
-                        <span dangerouslySetInnerHTML={{ __html: filterMessage(message.content) }} />
+                        <span dangerouslySetInnerHTML={{ __html: filterMessage(link(message.content)) }} />
                         <div style={styles.selfTriangle} />
                     </div>
                 </div>

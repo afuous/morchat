@@ -11,6 +11,7 @@ import { parseDateAndTime } from "~/util/date";
 import { connect } from "react-redux";
 import { deleteAnnouncement } from "~/home/actions";
 import { sanitize } from "dompurify";
+import { link } from "autolinker";
 
 const RadiumGlyphicon = Radium(Glyphicon);
 
@@ -75,7 +76,7 @@ class AnnouncementsListItem extends React.Component {
                     </span>
                     {this.renderDeleteButton()}
                 </div>
-                <span dangerouslySetInnerHTML={{ __html: sanitize(announcement.content) }} />
+                <span dangerouslySetInnerHTML={{ __html: sanitize(link(announcement.content)) }} />
             </div>
         )
     }

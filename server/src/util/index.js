@@ -4,7 +4,6 @@
  * This file is meant to keep all of the variables and functions that are used among several different modules.
  */
 let fs = require("fs");
-let autolinker = require("autolinker");
 let mongoose = require("mongoose");
 let session = require("express-session");
 let MongoStore = require("connect-mongo")(session);
@@ -89,11 +88,6 @@ util.removeHTML = function(text) {
     }
     return text;
     //  text.replace(/\<(?!a|br).*?\>/g, "");
-};
-
-// removes html and adds hyperlinks to some text
-util.normalizeDisplayedText = function(text) {
-    return autolinker.link(util.removeHTML(text));
 };
 
 String.prototype.contains = function(arg) {

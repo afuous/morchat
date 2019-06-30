@@ -2,7 +2,6 @@
 
 let express = require("express");
 let ObjectId = require("mongoose").Types.ObjectId;
-let autolinker = require("autolinker");
 let util = require("./util");
 
 let handler = util.handler;
@@ -19,11 +18,9 @@ router.post("/announcements", checkBody({
     content: types.string,
 }), requireLogin, handler(async function(req, res) {
 
-    let content = autolinker.link(req.body.content);
-
     let announcement = await Announcement.create({
         author: req.user._id,
-        content: content,
+        content: req.body.content,
         timestamp: new Date(),
     });
 

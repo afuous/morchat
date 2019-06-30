@@ -12,6 +12,7 @@ let streamify = require("gulp-streamify");
 let uglify = require("gulp-uglify");
 
 let libs = [
+    "autolinker",
     "axios",
     "dompurify",
     "radium",
