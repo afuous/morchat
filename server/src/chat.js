@@ -20,10 +20,7 @@ router.post("/chats", checkBody(types.union([{
     isTwoPeople: types.value(true),
     otherUserId: types.objectId(User),
 }, {
-    isAllUsers: types.value(true),
-}, {
     isTwoPeople: types.value(false),
-    isAllUsers: types.value(false),
     users: [types.objectId(User)],
     name: types.string,
 }])), requireLogin, handler(async function(req, res) {
@@ -47,7 +44,6 @@ router.post("/chats", checkBody(types.union([{
 
         let chat = await Chat.create({
             isTwoPeople: true,
-            isAllUsers: false,
             users: [
                 req.user._id,
                 req.body.otherUserId,
@@ -55,17 +51,6 @@ router.post("/chats", checkBody(types.union([{
         });
 
         chat.users = [req.user, otherUser];
-
-        await sio.createChat(chat);
-        res.json(chat);
-
-    } else if (req.body.isAllUsers) {
-
-        let chat = await Chat.create({
-            isAllUsers: true,
-            isTwoPeople: false,
-            name: req.body.name,
-        });
 
         await sio.createChat(chat);
         res.json(chat);
@@ -93,7 +78,6 @@ router.post("/chats", checkBody(types.union([{
 
         let chat = await Chat.create({
             isTwoPeople: false,
-            isAllUsers: false,
             name: req.body.name,
             users: req.body.users,
         });

@@ -13,7 +13,6 @@ let chatSchema = new Schema({
         ref: "User",
     },
     isTwoPeople: Boolean,
-    isAllUsers: Boolean,
     users: [{
         type: ObjectId,
         ref: "User",
@@ -65,13 +64,7 @@ chatSchema.methods.updateUnread = async function(userId) {
             this.unreadMessages.push({ user: userId, number: this.messages.length })
         }
     } else {
-        let users;
-        if (this.isAllUsers) {
-            users = await User.find();
-        } else {
-            users = this.users;
-        }
-        for (let user of users) {
+        for (let user of this.users) {
             if (this.unreadMessages.findIndex(elem =>
                 elem.user.toString() === user._id.toString()) === -1
             ) {

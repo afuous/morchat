@@ -34,7 +34,6 @@ class ComposeModal extends React.Component {
         if (users.length === 1) {
             this.props.dispatch(addChat({
                 isTwoPeople: true,
-                isAllUsers: false,
                 otherUserId: users[0],
             }));
             this.setState(this.initialState);
@@ -42,7 +41,6 @@ class ComposeModal extends React.Component {
         } else if (this.state.isEditingName) {
             this.props.dispatch(addChat({
                 isTwoPeople: false,
-                isAllUsers: false,
                 users: users,
                 name: this.state.name,
             }));

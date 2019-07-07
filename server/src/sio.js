@@ -158,17 +158,7 @@ sio.onConnection = function(socket) {
                 name: chat.name,
             };
 
-            if (chat.isAllUsers) {
-                for (let userId in onlineClients) {
-                    if (userId != sess._id) {
-                        for (let sock in onlineClients[userId].sockets) {
-                            sock.emit("message", chatData);
-                        }
-                    }
-                }
-            } else {
-                emitToUsers(chat.users, "message", chatData, sess._id);
-            }
+            emitToUsers(chat.users, "message", chatData, sess._id);
 
             socket.emit("message-sent", {
                 chatId: chatId,
