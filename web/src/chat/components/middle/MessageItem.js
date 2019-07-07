@@ -57,7 +57,6 @@ export default class MessageItem extends React.PureComponent {
                         >
                             <ProfilePicture
                                 user={message.author}
-                                picSize="small"
                                 frameSize={30}
                                 style={styles.profPic}
                             />

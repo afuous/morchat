@@ -31,13 +31,6 @@ export default class LoginBox extends React.Component {
             this.setState({
                 errorMsg: "Success"
             });
-            localStorage.username = user.username;
-            localStorage.firstname = user.firstname;
-            localStorage.lastname = user.lastname;
-            localStorage._id = user._id;
-            localStorage.email = user.email;
-            localStorage.phone = user.phone;
-            localStorage.profpicpath = user.profpicpath;
             setTimeout(() => window.location.assign("/"), REDIR_TIME);
         } catch ({ response: { data } }) {
             this.setState({

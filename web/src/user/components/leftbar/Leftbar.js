@@ -69,7 +69,6 @@ export default class Leftbar extends React.Component {
         return (
             <ProfilePicture
                 user={this.state.user}
-                picSize="large"
                 frameSize={150}
                 hasIndicator = {!isCurrentUser}
                 style={ isCurrentUser ? styles.img : { margin: styles.img.margin } }

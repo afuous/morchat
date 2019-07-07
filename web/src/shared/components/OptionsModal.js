@@ -19,7 +19,6 @@ const UserListItem = Radium(props => {
         <li style={styles.li}>
             <ProfilePicture
                 user={props.user}
-                picSize="small"
                 frameSize={30}
                 hasIndicator
             />

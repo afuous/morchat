@@ -45,7 +45,7 @@ var userSchema = new Schema({
     },
     created_at: Date,
     updated_at: Date,
-    profpicpath: String,
+    profPicUrl: String,
     mobileDeviceTokens: {
         type: [{
             type: String,

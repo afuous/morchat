@@ -4,6 +4,8 @@ import Radium from "radium";
 import { connect } from "react-redux";
 import styles from "~/shared/styles/profilePicture";
 
+const defaultProfPic = "/images/user.jpg";
+
 @Radium
 class ProfilePicture extends React.Component {
 
@@ -12,6 +14,10 @@ class ProfilePicture extends React.Component {
         frameSize: React.PropTypes.number,
         hasIndicator: React.PropTypes.bool,
         style: React.PropTypes.object,
+    }
+
+    state = {
+        src: this.props.user.profPicUrl || defaultProfPic,
     }
 
     getIndicator = () => {
@@ -27,14 +33,14 @@ class ProfilePicture extends React.Component {
     render() {
         return (
             <img
-                src={this.props.user.profpicpath}
+                src={this.state.src}
+                onError={() => this.setState({ src: defaultProfPic })}
                 style={[ this.getIndicator(), {
                     height: this.props.frameSize + "px",
-                    width: this.props.frameSize + "px"
+                    width: this.props.frameSize + "px",
                 }, this.props.style || {} ]}
                 onMouseOut={this.props.onMouseOut}
                 onMouseOver={this.props.onMouseOver}
-                aria-describedby={this.props["aria-describedby"]}
                 onClick={this.props.onClick}
             />
         )

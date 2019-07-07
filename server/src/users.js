@@ -79,6 +79,7 @@ router.post("/users", checkBody({
     lastname: types.string,
     email: types.string,
     phone: types.string,
+    profPicUrl: types.string,
 }), handler(async function(req, res) {
 
     // capitalize names
@@ -120,10 +121,9 @@ router.post("/users", checkBody({
         firstname: req.body.firstname,
         lastname: req.body.lastname,
         email: req.body.email,
-        phone: req.body.phone
+        phone: req.body.phone,
+        profPicUrl: req.body.profPicUrl,
     };
-
-    userInfo.profpicpath = "/images/user.jpg"; // default profile picture
 
     let user;
     try {
@@ -213,6 +213,7 @@ router.put("/profile", checkBody({
     lastname: types.string,
     email: types.string,
     phone: types.string,
+    profPicUrl: types.string,
 }), requireLogin, handler(async function(req, res) {
 
     if (!util.validateEmail(req.body.email)) {
@@ -226,6 +227,7 @@ router.put("/profile", checkBody({
     req.user.lastname = req.body.lastname;
     req.user.email = req.body.email;
     req.user.phone = req.body.phone;
+    req.user.profPicUrl = req.body.profPicUrl;
 
     await req.user.save();
 

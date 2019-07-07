@@ -25,7 +25,6 @@ export default class SearchDropItem extends React.Component {
                     <li style={styles.searchDropItem.li}>
                         <ProfilePicture
                             user={this.props.obj}
-                            picSize="small"
                             frameSize={30}
                             hasIndicator
                         />

@@ -31,7 +31,7 @@ export default class EditProfile extends React.Component {
             lastname: currentUser.lastname,
             email: currentUser.email,
             phone: currentUser.phone,
-            parentEmail: currentUser.parentEmail || "",
+            profPicUrl: currentUser.profPicUrl,
             errorMsg: "",
         }
     }
@@ -43,7 +43,7 @@ export default class EditProfile extends React.Component {
                 lastname: this.state.lastname,
                 email: this.state.email,
                 phone: this.state.phone,
-                parentEmail: this.state.parentEmail,
+                profPicUrl: this.state.profPicUrl,
             }
             let { data } = await ajax.request("PUT", "/profile", obj);
             this.setState({
@@ -84,6 +84,11 @@ export default class EditProfile extends React.Component {
                         placeholder="Phone Number"
                         value={this.state.phone}
                         onChange={this.getChangeHandler("phone")}
+                    />
+                    <ModalTextBox
+                        placeholder="Profile Picture URL"
+                        value={this.state.profPicUrl}
+                        onChange={this.getChangeHandler("profPicUrl")}
                     />
                     <ModalSubmitButton text="Save" />
                     {this.state.errorMsg && (
