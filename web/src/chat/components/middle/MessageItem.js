@@ -74,7 +74,7 @@ export default class MessageItem extends React.PureComponent {
                         </p>
                         <span
                             dangerouslySetInnerHTML={{
-                                __html: filterMessage(message.content)
+                                __html: filterMessage(link(message.content))
                             }}
                         />
                         <div style={styles.otherTriangle} />
