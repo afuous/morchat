@@ -9,18 +9,18 @@ let announcementSchema = new Schema({
     author: {
         type: ObjectId,
         ref: "User",
-        required: true
+        required: true,
     },
     content: {
         type: String,
-        required: true
+        required: true,
     },
     timestamp: {
         type: Date,
-        required: true
+        required: true,
     },
     created_at: Date,
-    updated_at: Date
+    updated_at: Date,
 });
 
 announcementSchema.pre("save", function(next) {

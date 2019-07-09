@@ -75,27 +75,24 @@ sio.onConnection = function(socket) {
                 return;
             }
 
-            let index = onlineClients[sess._id].sockets.indexOf(socket.id);
-            if (index != -1) {
-                onlineClients[sess._id].sockets.splice(index, 1); // remove the socket from the list of sockets for the user
+            onlineClients[sess._id].sockets = onlineClients[sess._id].sockets.filter(s => s != socket);
 
-                if (onlineClients[sess._id].sockets.length == 0) { // if no clients remain for the user
+            if (onlineClients[sess._id].sockets.length == 0) { // if no clients remain for the user
 
-                    let chatIds = onlineClients[sess._id].chats;
-                    delete onlineClients[sess._id]; // remove from online clients
+                let chatIds = onlineClients[sess._id].chatIds;
+                delete onlineClients[sess._id]; // remove from online clients
 
-                    // TODO: again why this qualification
-                    for (let userId in onlineClients) { // notify other clients that they went offline
-                        if (onlineClients[userId].chatIds.hasAnythingFrom(chatIds)) { // if they have any chats in common
-                            for (let sock of onlineClients[userId].sockets) {
-                                sock.emit("left", {
-                                    _id: sess._id,
-                                });
-                            }
+                // TODO: again why this qualification
+                for (let userId in onlineClients) { // notify other clients that they went offline
+                    if (onlineClients[userId].chatIds.hasAnythingFrom(chatIds)) { // if they have any chats in common
+                        for (let sock of onlineClients[userId].sockets) {
+                            sock.emit("left", {
+                                _id: sess._id,
+                            });
                         }
                     }
-
                 }
+
             }
         });
 
