@@ -51,7 +51,7 @@ export default {
         overflow: "hidden",
     },
     inputTextArea: {
-        width: "84%",
+        width: "85%",
         verticalAlign: "top",
         padding: "5px",
         resize: "none",
@@ -68,7 +68,7 @@ export default {
     sendButton: {
         backgroundColor: defaultColor,
         height: "30px",
-        width: "12%",
+        width: "10%",
         fontSize: "18px",
         borderRadius: "5px",
         marginLeft: "3px",
@@ -160,5 +160,6 @@ export const imageUpload = {
         float: "left",
         top: "8px",
         cursor: "pointer",
+        width: "2%",
     },
 }
