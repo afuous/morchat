@@ -51,7 +51,7 @@ export default {
         overflow: "hidden",
     },
     inputTextArea: {
-        width: "85%",
+        width: "84%",
         verticalAlign: "top",
         padding: "5px",
         resize: "none",
@@ -148,5 +148,17 @@ export const chatItem = {
         color: "#a9a9a9",
         fontSize: "14px",
         fontFamily: "'exo 2', sans-serif",
+    },
+}
+
+export const imageUpload = {
+    hidden: {
+        position: "absolute",
+        left: "-99999px",
+    },
+    camera: {
+        float: "left",
+        top: "8px",
+        cursor: "pointer",
     },
 }

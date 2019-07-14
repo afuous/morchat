@@ -4,6 +4,7 @@ import Radium from "radium";
 import FileUpload from "~/shared/components/forms/FileUpload";
 import TextArea from "~/shared/components/forms/TextArea";
 import Glyphicon from "react-bootstrap/lib/Glyphicon";
+import { imageUpload as styles } from "~/chat/styles/middle";
 
 import { uploadImage } from "~/chat/actions";
 import { connect } from "react-redux";
@@ -19,8 +20,9 @@ class ImageUpload extends React.Component {
                 <RadiumGlyphicon
                     onClick={() => $("#fileUpload").trigger("click")}
                     glyph="camera"
+                    style={styles.camera}
                 />
-                <div style={{ display: "none" }}>
+                <div style={styles.hidden}>
                     <FileUpload
                         id="fileUpload"
                         accept="image/*"

@@ -85,7 +85,7 @@ export function userSearch(search) {
     }
 }
 
-export function notify(title, content, onClick) {
+export function notify(title, content, onClick, closeOnClick) {
     new jBox("Notice", {
         attributes: {
             x: "right",
@@ -101,7 +101,7 @@ export function notify(title, content, onClick) {
         maxWidth: 300,
         maxHeight: 105,
         title,
-        closeOnClick: false,
+        closeOnClick,
         onOpen: function() {
             $($(this)[0].content).parent().parent().on("click", onClick);
         },

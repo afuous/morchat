@@ -30,7 +30,7 @@ export const receiveMessage = ({ chatId, message, isTwoPeople, name }) => (dispa
                 window.location.assign("/chat");
             }
             dispatch(setCurrentChatId(chatId));
-        });
+        }, false);
     }
 }
 

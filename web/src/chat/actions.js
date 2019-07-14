@@ -86,23 +86,16 @@ export const setChatName = ({ chatId, name }) => async (dispatch) => {
 export const uploadImage = (image) => async (dispatch) => {
     const formData = new FormData();
     formData.append("image", image);
-    const { data } = await axios.post(`https://api.imgur.com/3/image?client_id=${imgurClientId}`, formData)
-    .catch(err => {
-        console.log(err.response);
-        throw err;
+    const { data } = await axios.post(`https://api.imgur.com/3/image?client_id=${imgurClientId}`, formData);
+    const link = data.data.link;
+    dispatch({
+        type: "UPLOAD_IMAGE_SUCCESS",
+        link,
     });
-    if (data.success) {
-        const link = data.data.link;
-        dispatch({
-            type: "UPLOAD_IMAGE_SUCCESS",
-            link,
-        });
+    notify("Click to copy link", link, () => {
         document.getElementById("link").select();
         document.execCommand("copy");
-        notify("Link copied successfully", link, () => window.open(link, "_blank"));
-    } else {
-        notify("Image upload failed", action.error);
-    }
+    }, true);
 }
 
 export const setCurrentChatId = (chatId) => (dispatch) => {

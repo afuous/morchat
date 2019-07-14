@@ -1,1 +1,1 @@
-export const imgurClientId = "4fc37ac555959ce";
+export const imgurClientId = "secret";
