@@ -5,6 +5,7 @@ import { connect } from "react-redux";
 import Form from "~/shared/components/forms/Form";
 import TextArea from "~/shared/components/forms/TextArea";
 import SubmitButton from "~/shared/components/forms/SubmitButton";
+import ImageUpload from "~/chat/components/middle/ImageUpload";
 import styles from "~/chat/styles/middle";
 import {
     sendMessage,
@@ -83,6 +84,7 @@ class MessageInput extends React.Component {
         return (
             <div style={styles.inputDiv}>
                 <Form onSubmit={this.handleSend} style={{ marginBottom: "0" }}>
+                    <ImageUpload />
                     <TextArea
                         autoFocus
                         id="chat-input"

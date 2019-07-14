@@ -3,8 +3,8 @@ import Radium from "radium";
 
 import Root, { pageInit } from "~/shared/components/Root";
 import Navbar from "~/shared/components/navbar/Navbar";
-import Leftbar from "./leftbar/Leftbar";
-import Middle from "./middle/Middle";
+import Leftbar from "~/chat/components/leftbar/Leftbar";
+import Middle from "~/chat/components/middle/Middle";
 
 import { makeStore, soundsMiddleware } from "~/util/redux";
 import reducers from "~/chat/reducers";
