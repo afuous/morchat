@@ -95,6 +95,7 @@ export const uploadImage = (image) => async (dispatch) => {
     notify("Click to copy link", link, () => {
         document.getElementById("link").select();
         document.execCommand("copy");
+        document.getElementById("chat-input").focus();
     }, true);
 }
 
