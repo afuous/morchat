@@ -3,7 +3,7 @@ import { request } from "~/util/ajax";
 import { emit } from "~/util/sio";
 import { receiveMessage as receiveMessageShared } from "~/shared/actions";
 import { currentUser, getRandomString, notify } from "~/util";
-import { imgurClientId } from "~/config";
+import { imgurClientId } from "~/config.json";
 
 export const addChatSync = (chat) => ({
     type: "ADD_CHAT_SUCCESS",

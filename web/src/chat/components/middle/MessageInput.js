@@ -13,6 +13,7 @@ import {
     stopTyping,
     setInputSize,
 } from "~/chat/actions";
+import { imgurClientId } from "~/config.json";
 
 const maxRowsShown = 12;
 
@@ -84,7 +85,7 @@ class MessageInput extends React.Component {
         return (
             <div style={styles.inputDiv}>
                 <Form onSubmit={this.handleSend} style={{ marginBottom: "0" }}>
-                    <ImageUpload />
+                    {imgurClientId && ( <ImageUpload /> )}
                     <TextArea
                         autoFocus
                         id="chat-input"
