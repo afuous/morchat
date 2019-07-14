@@ -28,6 +28,7 @@ export default class Signup extends React.Component {
             confirmPassword: "",
             email: "",
             phone: "",
+            profPicUrl: "",
             errorMsg: "",
         };
 
@@ -45,6 +46,7 @@ export default class Signup extends React.Component {
                 password: this.state.password,
                 email: this.state.email,
                 phone: this.state.phone,
+                profPicUrl: this.state.profPicUrl,
             };
             await ajax.request("post", "/users", obj);
             this.setState({
@@ -102,6 +104,11 @@ export default class Signup extends React.Component {
                             placeholder="Phone Number (Optional)"
                             value={this.state.phoneNumber}
                             onChange={this.getChangeHandler("phone")}
+                        />
+                        <SignupInput
+                            placeholder="Profile Pic Url (Optional)"
+                            value={this.state.profPicUrl}
+                            onChange={this.getChangeHandler("profPicUrl")}
                         />
                         <ErrorMsg message={this.state.errorMsg} />
                         <SubmitButton
