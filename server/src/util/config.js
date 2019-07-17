@@ -4,7 +4,7 @@ let fs = require("fs");
 
 let defaultConfig = {
     sessionSecret: "secret",
-    host: "test.localhost",
+    host: "",
     dbHost: "localhost",
     dbPort: 27017,
     dbName: "MorChat",

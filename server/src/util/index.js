@@ -36,7 +36,7 @@ util.sessionMiddleware = session({
     saveUninitialized: false,
     resave: false,
     cookie: {
-        domain: "." + config.host,
+        domain: config.host,
     },
     store: new MongoStore({
         mongooseConnection: mongoose.connection,
