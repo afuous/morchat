@@ -4,7 +4,7 @@ import Radium from "radium";
 import FileUpload from "~/shared/components/forms/FileUpload";
 import TextArea from "~/shared/components/forms/TextArea";
 import Glyphicon from "react-bootstrap/lib/Glyphicon";
-import { imageUpload as styles } from "~/chat/styles/middle";
+import styles from "~/chat/styles/middle";
 
 import { uploadImage } from "~/chat/actions";
 import { connect } from "react-redux";
@@ -17,28 +17,21 @@ class ImageUpload extends React.Component {
     render() {
         return (
             <div>
-                <RadiumGlyphicon
-                    onClick={() => $("#fileUpload").trigger("click")}
-                    glyph="camera"
-                    style={styles.camera}
-                />
-                <div style={styles.hidden}>
-                    <FileUpload
-                        id="fileUpload"
-                        accept="image/*"
-                        onChange={(event) => this.props.dispatch(uploadImage(event.target.files[0]))}
+                <span style={styles.circle} onClick={() => $("#fileUpload").trigger("click")}>
+                    <RadiumGlyphicon
+                        glyph="camera"
+                        style={styles.camera}
                     />
-                    <TextArea id="link" value={this.props.link} />
-                </div>
+                </span>
+                <FileUpload
+                    style={{ display: "none" }}
+                    id="fileUpload"
+                    accept="image/*"
+                    onChange={(event) => this.props.dispatch(uploadImage(event.target.files[0]))}
+                />
             </div>
         )
     }
 }
 
-const mapStateToProps = (state) => {
-    return {
-        link: state.imgurLink,
-    }
-}
-
-export default connect(mapStateToProps)(ImageUpload);
+export default connect()(ImageUpload);

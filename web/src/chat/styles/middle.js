@@ -76,6 +76,19 @@ export default {
             backgroundColor: selectedColor,
         },
     },
+    camera: {
+    },
+    circle: {
+        float: "left",
+        backgroundColor: defaultColor,
+        borderRadius: "50%",
+        cursor: "pointer",
+        padding: "5px",
+        ":hover": {
+            backgroundColor: hoverColor,
+        },
+    },
+
 }
 
 const selfBubble = {
@@ -148,18 +161,5 @@ export const chatItem = {
         color: "#a9a9a9",
         fontSize: "14px",
         fontFamily: "'exo 2', sans-serif",
-    },
-}
-
-export const imageUpload = {
-    hidden: {
-        position: "absolute",
-        left: "-99999px",
-    },
-    camera: {
-        float: "left",
-        top: "8px",
-        cursor: "pointer",
-        width: "2%",
     },
 }

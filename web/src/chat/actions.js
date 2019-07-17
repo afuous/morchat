@@ -88,15 +88,7 @@ export const uploadImage = (image) => async (dispatch) => {
     formData.append("image", image);
     const { data } = await axios.post(`https://api.imgur.com/3/image?client_id=${imgurClientId}`, formData);
     const link = data.data.link;
-    dispatch({
-        type: "UPLOAD_IMAGE_SUCCESS",
-        link,
-    });
-    notify("Click to copy link", link, () => {
-        document.getElementById("link").select();
-        document.execCommand("copy");
-        document.getElementById("chat-input").focus();
-    }, true);
+    notify("Click to send link", link, () => dispatch(sendMessage(link)), true);
 }
 
 export const setCurrentChatId = (chatId) => (dispatch) => {
@@ -168,7 +160,6 @@ export const setInputSize = (heightDiff) => ({
     type: "SET_INPUT_SIZE",
     heightDiff,
 })
-
 
 export const loadChats = (selected) => async (dispatch, getState) => {
     const { currentTab } = getState();
