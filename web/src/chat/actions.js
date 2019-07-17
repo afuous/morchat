@@ -1,7 +1,9 @@
+import axios from "axios"
 import { request } from "~/util/ajax";
 import { emit } from "~/util/sio";
 import { receiveMessage as receiveMessageShared } from "~/shared/actions";
-import { currentUser, getRandomString } from "~/util";
+import { currentUser, getRandomString, notify } from "~/util";
+import { imgurClientId } from "~/config.json";
 
 export const addChatSync = (chat) => ({
     type: "ADD_CHAT_SUCCESS",
@@ -79,6 +81,22 @@ export const setChatName = ({ chatId, name }) => async (dispatch) => {
         newName: name,
     });
     // chat is renamed by socketio
+}
+
+export const uploadImage = (image) => async (dispatch) => {
+    const formData = new FormData();
+    formData.append("image", image);
+    const { data } = await axios.post(`https://api.imgur.com/3/image?client_id=${imgurClientId}`, formData);
+    const link = data.data.link;
+    dispatch({
+        type: "UPLOAD_IMAGE_SUCCESS",
+        link,
+    });
+    notify("Click to copy link", link, () => {
+        document.getElementById("link").select();
+        document.execCommand("copy");
+        document.getElementById("chat-input").focus();
+    }, true);
 }
 
 export const setCurrentChatId = (chatId) => (dispatch) => {

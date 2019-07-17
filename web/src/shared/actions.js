@@ -1,5 +1,4 @@
-import { fullName } from "~/util";
-import { currentUser } from "~/util";
+import { fullName, currentUser, notify } from "~/util";
 import { setCurrentChatId } from "~/chat/actions";
 
 export const setOnlineClients = (userIds) => ({
@@ -25,32 +24,13 @@ export const receiveMessage = ({ chatId, message, isTwoPeople, name }) => (dispa
                 sound: "chatMessageNotification",
             },
         });
-        new jBox("Notice", {
-            attributes: {
-                x: "right",
-                y: "bottom"
-            },
-            theme: "NoticeBorder",
-            volume: 100,
-            animation: {
-                open: "slide:bottom",
-                close: "slide:right"
-            },
-            content: message.content,
-            maxWidth: 300,
-            maxHeight: 105,
-            title: isTwoPeople ? fullName(message.author) : fullName(message.author) + " in " + name,
-            closeOnClick: false,
-            onOpen: function() {
-                $($(this)[0].content).parent().parent().addClass("messageNotification"); // beauty
-            },
-        });
-        $(document).on("click", ".messageNotification", function() {
+        const title = isTwoPeople ? fullName(message.author) : fullName(message.author) + " in " + name;
+        notify(title, message.content, () => {
             if (window.location.pathname !== "/chat") {
                 window.location.assign("/chat");
             }
             dispatch(setCurrentChatId(chatId));
-        })
+        }, false);
     }
 }
 

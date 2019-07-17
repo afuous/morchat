@@ -85,6 +85,29 @@ export function userSearch(search) {
     }
 }
 
+export function notify(title, content, onClick, closeOnClick) {
+    new jBox("Notice", {
+        attributes: {
+            x: "right",
+            y: "bottom"
+        },
+        theme: "NoticeBorder",
+        volume: 100,
+        animation: {
+            open: "slide:bottom",
+            close: "slide:right"
+        },
+        content,
+        maxWidth: 300,
+        maxHeight: 105,
+        title,
+        closeOnClick,
+        onOpen: function() {
+            $($(this)[0].content).parent().parent().on("click", onClick);
+        },
+    });
+}
+
 export const currentUser = window.__userInfo;
 
 export const pageOptions = window.__options;

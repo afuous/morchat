@@ -196,8 +196,20 @@ function inputSize(state = initialChatSize, action) {
     }
 }
 
+const initialImgurLink = "";
+
+function imgurLink(state = initialImgurLink, action) {
+    switch(action.type) {
+        case "UPLOAD_IMAGE_SUCCESS":
+            return action.link
+        default:
+            return state
+    }
+}
+
 export default {
     chats,
     currentChatId,
     inputSize,
+    imgurLink,
 }

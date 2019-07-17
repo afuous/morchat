@@ -68,7 +68,7 @@ export default {
     sendButton: {
         backgroundColor: defaultColor,
         height: "30px",
-        width: "12%",
+        width: "10%",
         fontSize: "18px",
         borderRadius: "5px",
         marginLeft: "3px",
@@ -148,5 +148,18 @@ export const chatItem = {
         color: "#a9a9a9",
         fontSize: "14px",
         fontFamily: "'exo 2', sans-serif",
+    },
+}
+
+export const imageUpload = {
+    hidden: {
+        position: "absolute",
+        left: "-99999px",
+    },
+    camera: {
+        float: "left",
+        top: "8px",
+        cursor: "pointer",
+        width: "2%",
     },
 }

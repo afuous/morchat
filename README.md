@@ -14,7 +14,10 @@ MorChat is a derivative of [MorTeam](https://github.com/mortorqrobotics/morteam-
 
 ## Config
 
-The configuration file is `server/config.json` and is automatically generated after running the server once.
+The server configuration file is `server/config.json` and is automatically generated after running the server once.
 - `sessionSecret`: Change this to a random string and keep it secret.
 - `host`: The host visitors will be visiting in their browser. Necessary for cookie purposes.
 - `dbHost`, `dbPort`, `dbName`: To specify the location of the mongodb server.
+
+The web client configuration file is `web/src/config.json` and is automatically generated after running npm install in `web`.
+- `imgurClientId`: Change this to your Imgur API client id if you want to integrate Imgur uploads to the chat.

@@ -5,6 +5,7 @@ import { connect } from "react-redux";
 import Form from "~/shared/components/forms/Form";
 import TextArea from "~/shared/components/forms/TextArea";
 import SubmitButton from "~/shared/components/forms/SubmitButton";
+import ImageUpload from "~/chat/components/middle/ImageUpload";
 import styles from "~/chat/styles/middle";
 import {
     sendMessage,
@@ -12,6 +13,7 @@ import {
     stopTyping,
     setInputSize,
 } from "~/chat/actions";
+import { imgurClientId } from "~/config.json";
 
 const maxRowsShown = 12;
 
@@ -83,6 +85,7 @@ class MessageInput extends React.Component {
         return (
             <div style={styles.inputDiv}>
                 <Form onSubmit={this.handleSend} style={{ marginBottom: "0" }}>
+                    {imgurClientId && ( <ImageUpload /> )}
                     <TextArea
                         autoFocus
                         id="chat-input"

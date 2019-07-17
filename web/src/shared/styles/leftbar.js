@@ -58,7 +58,7 @@ export default {
             ":hover": {
                 backgroundColor: "darkOrange",
             },
-            "@media screen and (max-width: 750px)": {
+            "@media screen and (max-width: 770px)": {
                 top: "50px",
             },
         },
