@@ -18,6 +18,7 @@ class ImageUpload extends React.Component {
         return (
             <div>
                 <RadiumGlyphicon
+                    onClick={() => $("#fileUpload").trigger("click")}
                     glyph="camera"
                     style={styles.camera}
                 />
