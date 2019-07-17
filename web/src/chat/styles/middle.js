@@ -77,18 +77,11 @@ export default {
         },
     },
     camera: {
-    },
-    circle: {
         float: "left",
-        backgroundColor: defaultColor,
-        borderRadius: "50%",
+        top: "8px",
         cursor: "pointer",
-        padding: "5px",
-        ":hover": {
-            backgroundColor: hoverColor,
-        },
+        width: "2%",
     },
-
 }
 
 const selfBubble = {

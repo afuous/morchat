@@ -17,12 +17,10 @@ class ImageUpload extends React.Component {
     render() {
         return (
             <div>
-                <span style={styles.circle} onClick={() => $("#fileUpload").trigger("click")}>
-                    <RadiumGlyphicon
-                        glyph="camera"
-                        style={styles.camera}
-                    />
-                </span>
+                <RadiumGlyphicon
+                    glyph="camera"
+                    style={styles.camera}
+                />
                 <FileUpload
                     style={{ display: "none" }}
                     id="fileUpload"
