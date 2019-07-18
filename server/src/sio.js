@@ -134,19 +134,13 @@ sio.onConnection = function(socket) {
                 unreadMessages: 1,
             });
 
-            let promises = [];
-            for (let elem of chat.unreadMessages) {
-                if (elem.user.toString() !== sess._id.toString()) {
-                    promises.push(Chat.updateOne({
-                        _id: chatId,
-                        "unreadMessages.user": elem.user,
-                    }, {
-                        $inc: { "unreadMessages.$.number": 1 },
-                    }))
-                }
-            }
-
-            await Promise.all(promises);
+            await Chat.updateOne({
+                _id: chatId,
+            }, {
+                "$inc": { "unreadMessages.$[elem].number": 1 },
+            }, {
+                arrayFilters: [{ "elem.user": { "$ne": sess._id } }],
+            });
 
             let chatData = {
                 chatId: chatId,

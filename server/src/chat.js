@@ -177,9 +177,13 @@ router.put("/chats/id/:chatId/name", checkBody({
         return res.status(400).end("This chat cannot be renamed");
     }
 
-    chat.name = req.body.newName;
+    await Chat.updateOne({
+        _id: req.params.chatId,
+    }, {
+        name: req.body.newName,
+    });
 
-    await chat.save();
+    chat.name = req.body.newName;
 
     await sio.renameChat(chat);
     res.end();

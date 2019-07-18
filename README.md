@@ -6,7 +6,7 @@ MorChat is a derivative of [MorTeam](https://github.com/mortorqrobotics/morteam-
 
 ## How to run
 
-1. Install node.js, npm, and mongodb.
+1. Install node.js, npm, and mongodb (3.6 or later).
 2. Run `npm install` in `server` and `web`.
 3. Run `npm run build` in `web`.
 4. Ensure that a mongodb server is running.
