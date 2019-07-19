@@ -16,20 +16,23 @@ export const leaveOnlineClient = (userId) => ({
     userId,
 })
 
-export const receiveMessage = ({ chatId, message, isTwoPeople, name }) => (dispatch) => {
+export const receiveMessage = ({ chatId, message, isTwoPeople, name, sound }) => (dispatch) => {
     if (currentUser._id !== message.author._id){
-        dispatch({
-            type: "NOTHING_HERE",
-            meta: {
-                sound: "chatMessageNotification",
-            },
-        });
+        if (sound) {
+            dispatch({
+                type: "NOTHING_HERE",
+                meta: {
+                    sound: "chatMessageNotification",
+                },
+            });
+        }
         const title = isTwoPeople ? fullName(message.author) : fullName(message.author) + " in " + name;
         notify(title, message.content, () => {
             if (window.location.pathname !== "/chat") {
                 window.location.assign("/chat");
+            } else {
+                dispatch(setCurrentChatId(chatId));
             }
-            dispatch(setCurrentChatId(chatId));
         }, false);
     }
 }

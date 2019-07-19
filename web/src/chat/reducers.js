@@ -45,8 +45,8 @@ function chats(state = initialChats, action) {
                     unreadMessages: {
                         [unreadMessagesIndex]: {
                             number: {
-                                $set: state[index].unreadMessages[unreadMessagesIndex]
-                                    .number + (action.chatId !== action.currentChatId)
+                                $set: state[index].unreadMessages[unreadMessagesIndex].number
+                                    + (action.markAsRead ? 0 : 1),
                             }
                         }
                     }
@@ -55,6 +55,25 @@ function chats(state = initialChats, action) {
             return newState.sort((a, b) => (
                 new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime()
             ));
+        case "MARK_MESSAGES_READ":
+            index = state.findIndex(chat => chat._id === action.chatId);
+            unreadMessagesIndex = state[index].unreadMessages.findIndex(obj =>
+                    obj.user === currentUser._id);
+            // TODO: the client should only be storing the number of unread messages for this user
+            // no need to have the whole array for the other users too, and really,
+            // one user should not be able to get this information for other users
+            // this is equivalent to read receipts which are not supposed to exist currently
+            return update(state, {
+                [index]: {
+                    unreadMessages: {
+                        [unreadMessagesIndex]: {
+                            number: {
+                                $set: 0,
+                            }
+                        }
+                    }
+                },
+            })
         case "SEND_MESSAGE_LOADING":
             index = state.findIndex(chat => chat._id === action.chatId);
             return update(state, {

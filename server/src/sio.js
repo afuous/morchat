@@ -161,18 +161,12 @@ sio.onConnection = function(socket) {
         socket.on("read message", async function(data) {
             let chatId = data.chatId;
 
-            let chat = await Chat.findOne({
-                _id: chatId,
-            })
-
             await Chat.updateOne({
-                $and: [
-                    { _id: chatId },
-                    { "unreadMessages.user": sess._id },
-                ],
+                _id: chatId,
+                "unreadMessages.user": sess._id,
             }, {
                 $set: { "unreadMessages.$.number": 0 },
-            })
+            });
         })
 
         // TODO: if a user has multiple clients and sends a message, display sent message on all clients

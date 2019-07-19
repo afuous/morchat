@@ -31,6 +31,7 @@ export function initAlertCreator(socket, dispatch) {
             message,
             type,
             name,
+            sound: true,
         }))
     })
 

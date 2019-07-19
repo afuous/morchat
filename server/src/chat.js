@@ -110,6 +110,8 @@ router.get("/chats", checkBody(), requireLogin, handler(async function(req, res)
         .exec();
     // ^ the code above gets the latest message from the chat (for previews in iOS and Android) and orders the list by most recent.
 
+    // TODO: should not be sending the number of unread messages for all users, this is read receipts
+
     // for (let chat of chats) {
     //     await chat.updateUnread();
     // }

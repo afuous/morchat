@@ -23,13 +23,14 @@ export const receiveMessage = ({ chatId, message, isTwoPeople, name }) => (dispa
             sound: "chatMessageNotification",
         };
     }
-    if (window.__isFocused && currentChatId !== chatId) {
-        dispatch(receiveMessageShared({ chatId, message, isTwoPeople, name }));
+    if (currentChatId !== chatId) {
+        dispatch(receiveMessageShared({ chatId, message, isTwoPeople, name, sound: false }));
     }
+
+    let markAsRead = currentChatId === chatId && window.__isFocused;
     dispatch({
         type: "RECEIVE_MESSAGE_SUCCESS",
         chatId,
-        currentChatId,
         message: {
             ...message,
             // giving each message a unique id lets the view know which
@@ -38,12 +39,24 @@ export const receiveMessage = ({ chatId, message, isTwoPeople, name }) => (dispa
         },
         meta, // this is part of redux-sounds
         timestamp: new Date(),
+        markAsRead,
     });
-    if (currentChatId === chatId) {
+    if (markAsRead) {
         emit("read message", {
             chatId,
         })
     }
+}
+
+export const windowFocused = () => async (dispatch, getState) => {
+    const { currentChatId } = getState();
+    dispatch({
+        type: "MARK_MESSAGES_READ",
+        chatId: currentChatId,
+    });
+    emit("read message", {
+        chatId: currentChatId,
+    });
 }
 
 export const sendMessage = (content) => (dispatch, getState) => {
