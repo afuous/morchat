@@ -44,6 +44,8 @@ router.post("/login", checkBody({
     // store user info in cookies
     req.session.userId = user._id;
 
+    req.session.cookie.maxAge = 365 * 24 * 60 * 60 * 1000;
+
     res.json(user);
 
 }));
