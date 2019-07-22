@@ -10,11 +10,11 @@ import {
 
 export function initListeners(socket, dispatch) {
 
-    socket.on("message", ({ chatId, message, type, name }) => {
+    socket.on("message", ({ chatId, message, isTwoPeople, name }) => {
         dispatch(receiveMessage({
             chatId,
             message,
-            type,
+            isTwoPeople,
             name,
         }))
     })
