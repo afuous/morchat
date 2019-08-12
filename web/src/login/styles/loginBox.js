@@ -15,7 +15,7 @@ export default {
         backgroundColor: defaultColor,
         width: "260px",
         height: "auto",
-        position: "fixed",
+        position: "absolute",
         right: "10px",
         textAlign: "center",
         paddingTop: "50px",
