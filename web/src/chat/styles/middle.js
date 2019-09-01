@@ -12,7 +12,6 @@ const triangle = {
 }
 
 const wrapper = {
-    minWidth: "400px",
     top: "40px",
     height: "calc(100% - 40px)",
     position: "absolute",
@@ -32,7 +31,6 @@ export default {
     messagesDiv: {
         maxWidth: "700px",
         width: "95%",
-        minWidth: "380px",
         minHeight: "250px",
         margin: "0 auto",
         zIndex: "-1",
@@ -45,13 +43,12 @@ export default {
         position: "relative",
         maxWidth: "700px",
         width: "95%",
-        minWidth: "380px",
         margin: "9px auto",
         zIndex: "80",
         overflow: "hidden",
     },
     inputTextArea: {
-        width: "85%",
+        width: "calc(100% - 100px)",
         verticalAlign: "top",
         padding: "5px",
         resize: "none",
@@ -68,7 +65,7 @@ export default {
     sendButton: {
         backgroundColor: defaultColor,
         height: "30px",
-        width: "10%",
+        width: "70px",
         fontSize: "18px",
         borderRadius: "5px",
         marginLeft: "3px",
@@ -80,7 +77,7 @@ export default {
         float: "left",
         top: "8px",
         cursor: "pointer",
-        width: "2%",
+        width: "16px",
     },
 }
 
