@@ -73,7 +73,11 @@ class OptionsModal extends React.Component {
         }
     }
 
-    handleNameEditRender = () => {
+    handleDownloadLog = async () => {
+        window.open("/api/chats/id/" + this.props.chat._id + "/log");
+    }
+
+    renderNameEdit = () => {
         if (this.props.hasNameEdit) {
             return (
                 <div>
@@ -87,7 +91,7 @@ class OptionsModal extends React.Component {
         }
     }
 
-    handleAudienceRender = () => {
+    renderUserList = () => {
         if (this.props.hasUserList) {
             return (
                 <ul style={styles.ul}>
@@ -102,17 +106,6 @@ class OptionsModal extends React.Component {
         }
     }
 
-    handleDoneRender = () => {
-        if (this.props.hasNameEdit) {
-            return (
-                <ModalButton
-                    text="Done"
-                    onClick={this.handleSubmit}
-                />
-            )
-        }
-    }
-
     render() {
         return (
             <StandardModal
@@ -123,9 +116,16 @@ class OptionsModal extends React.Component {
                     this.props.onRequestClose();
                 }}
             >
-                {this.handleNameEditRender()}
-                {this.handleAudienceRender()}
-                {this.handleDoneRender()}
+                {this.renderNameEdit()}
+                {this.renderUserList()}
+                <ModalButton
+                    text="Download log"
+                    onClick={this.handleDownloadLog}
+                />
+                <ModalButton
+                    text="Done"
+                    onClick={this.handleSubmit}
+                />
             </StandardModal>
         )
     }

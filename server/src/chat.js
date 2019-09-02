@@ -192,4 +192,78 @@ router.put("/chats/id/:chatId/name", checkBody({
 
 }));
 
+router.get("/chats/id/:chatId/log", handler(async function(req, res) {
+
+    let chat = await Chat.findOne({
+        _id: req.params.chatId,
+        users: req.user._id,
+    });
+    if (!chat) {
+        return res.status(403).end("Access denied");
+    }
+
+    let chatTitle;
+    if (chat.isTwoPeople) {
+        let otherUserId = chat.users.find(userId => userId.toString() != req.user._id.toString());
+        let otherUser = await User.findOne({
+            _id: otherUserId,
+        });
+        chatTitle = otherUser.firstname + " " + otherUser.lastname;
+    } else {
+        chatTitle = chat.name;
+    }
+    res.setHeader("Content-type", "text/plain");
+    res.setHeader("Content-disposition", "attachment; filename=" + chatTitle + ".log");
+
+    // TODO: any way to query the size of an array without putting the whole array into memory?
+    // this is written in a very strange way due to messages being stored in reverse order
+
+    function pad(n) {
+        if (n < 10) {
+            return "0" + n;
+        } else {
+            return n;
+        }
+    }
+
+    let messages;
+    let chunkSize = 1000;
+    let messageNum = 1;
+    let stop = false;
+    let seenMessageIds = {};
+
+    for (let i = 0; !stop; i++) {
+        messages = (await Chat.findOne({
+            _id: req.params.chatId,
+        })
+            .select("+messages")
+            .slice("messages", [-1 - (i + 1) * chunkSize, chunkSize])
+            .populate("messages.author")
+            .exec()
+        ).messages;
+
+        for (let message of messages.reverse()) {
+            if (seenMessageIds[message._id]) {
+                stop = true;
+                continue;
+            }
+            seenMessageIds[message._id] = true;
+
+            let authorName = message.author.firstname + " " + message.author.lastname[0];
+            let date = new Date(message.timestamp);
+            res.write(
+                messageNum + " ".repeat(8 - messageNum.toString().length)
+                + date.getFullYear() + "-" + pad(date.getMonth() + 1) + "-" + pad(date.getDate()) + " "
+                + pad(date.getHours()) + ":" + pad(date.getMinutes()) + ":" + pad(date.getSeconds()) + " "
+                + authorName + " ".repeat(12 - authorName.length) + " "
+                + message.content + "\n"
+            );
+
+            messageNum++;
+        }
+    }
+    res.end();
+
+}));
+
 module.exports = router;
