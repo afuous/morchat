@@ -7,6 +7,7 @@ import Leftbar from "~/chat/components/leftbar/Leftbar";
 import Middle from "~/chat/components/middle/Middle";
 import { currentUser } from "~/util";
 import { windowFocused } from "~/chat/actions";
+import { closeLeftbar } from "~/shared/actions";
 
 import { makeStore, soundsMiddleware } from "~/util/redux";
 import reducers from "~/chat/reducers";
@@ -60,3 +61,7 @@ store.subscribe(() => {
         document.title = "(" + numUnread + ") " + mainTitle;
     }
 });
+
+if (window.innerWidth < 800) {
+    store.dispatch(closeLeftbar());
+}
