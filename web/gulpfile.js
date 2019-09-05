@@ -24,7 +24,6 @@ let libs = [
     "redux",
     "redux-sounds",
     "redux-thunk",
-    "socket.io-client",
 ];
 
 let allPages = [

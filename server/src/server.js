@@ -110,5 +110,5 @@ console.log("MorChat started");
 
 module.exports = {
     app: app,
-    sioOnConnection: sio.onConnection,
+    wsOnConnection: sio.onConnection,
 };

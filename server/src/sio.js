@@ -25,13 +25,44 @@ let emitToUsers = async function(userIds, name, data, except) {
     }
 };
 
-sio.onConnection = function(socket) {
+function getSocket(ws) {
+    let listeners = {};
+    ws.on("message", function(str) {
+        let obj = JSON.parse(str);
+        if (listeners[obj.type]) {
+            listeners[obj.type](obj.data);
+        } else {
+            console.error("Listener not found: " + obj.type);
+        }
+    });
+    ws.on("close", function() {
+        if (listeners["disconnect"]) {
+            listeners["disconnect"]();
+        }
+    });
+    return {
+        on: function(type, func) {
+            listeners[type] = func;
+        },
+        emit: function(type, data) {
+            ws.send(JSON.stringify({
+                type: type,
+                data: data,
+            }));
+        },
+    };
+}
 
-    util.sessionMiddleware(socket.request, socket.request.res, async function() {
 
-        let sess = socket.request.session.userId && (await User.findOne({
-            _id: socket.request.session.userId
+sio.onConnection = function(ws, request) {
+    let socket = getSocket(ws);
+
+    util.sessionMiddleware(request, {}, async function() {
+
+        let sess = request.session.userId && (await User.findOne({
+            _id: request.session.userId
         }));
+
         if (sess) {
             try {
 
