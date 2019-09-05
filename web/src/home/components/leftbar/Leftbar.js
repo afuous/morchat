@@ -40,7 +40,19 @@ class Leftbar extends React.Component {
                 <span style={styles.leftbar.span}>
                     <Link
                         location="/terms.html"
+                        target="_blank"
                         text="Privacy and Terms"
+                        style={styles.leftbar.link}
+                    />
+                </span>
+
+                <br />
+
+                <span style={styles.leftbar.span}>
+                    <Link
+                        location="https://github.com/afuous/morchat"
+                        target="_blank"
+                        text="Source code"
                         style={styles.leftbar.link}
                     />
                 </span>
