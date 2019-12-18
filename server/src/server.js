@@ -24,9 +24,9 @@ app.use("/api/*", (req, res, next) => {
         "Access-Control-Allow-Headers": "Content-Type, Authorization",
         "Access-Control-Allow-Origin": "*",
     });
-    if (req.headers["Authorization"]) {
+    if (req.headers["authorization"]) {
         // Authorization: Bearer <cookie here, name=value>
-        req.headers["Cookie"] = req.headers["Authorization"].split(" ")[1] + ";";
+        req.headers["cookie"] = req.headers["authorization"].split(" ")[1] + ";";
     }
     next();
 });
