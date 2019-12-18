@@ -18,6 +18,19 @@ mongoose.connect("mongodb://" + config.dbHost + ":" + config.dbPort + "/" + conf
 // main app that is exported
 let app = express();
 
+app.use("/api/*", (req, res, next) => {
+    // this is for the mobile website
+    res.set({
+        "Access-Control-Allow-Headers": "Content-Type, Authorization",
+        "Access-Control-Allow-Origin": "*",
+    });
+    if (req.headers["Authorization"]) {
+        // Authorization: Bearer <cookie here, name=value>
+        req.headers["Cookie"] = req.headers["Authorization"].split(" ")[1] + ";";
+    }
+    next();
+});
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
     extended: true

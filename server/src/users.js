@@ -18,6 +18,7 @@ router.post("/login", checkBody({
     emailOrUsername: types.string,
     password: types.string,
     mobileDeviceToken: types.maybe(types.string),
+    useCookie: types.maybe(types.boolean),
 }), handler(async function(req, res) {
 
     let user = await User.findOne({
@@ -46,7 +47,18 @@ router.post("/login", checkBody({
 
     req.session.cookie.maxAge = 365 * 24 * 60 * 60 * 1000;
 
-    res.json(user);
+    res.writeHead(200, {
+        "Content-Type": "application/json",
+    });
+    let obj = {
+        user: user,
+    };
+    if (req.body.useCookie === false) {
+        let cookieString = res.getHeaders()["set-cookie"][0];
+        let auth = cookieString.substring(0, cookieString.indexOf(";"));
+        obj.auth = auth;
+    }
+    res.end(JSON.stringify(obj));
 
 }));
 

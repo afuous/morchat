@@ -24,7 +24,7 @@ export default class LoginBox extends React.Component {
 
     onSubmit = async() => {
         try {
-            let { data: user } = await ajax.request("post", "/login", {
+            let { data: { user: user } } = await ajax.request("post", "/login", {
                 emailOrUsername: this.state.emailOrUsername,
                 password: this.state.password,
             });
