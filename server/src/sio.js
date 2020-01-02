@@ -27,6 +27,10 @@ let emitToUsers = async function(userIds, name, data, except) {
 
 sio.onConnection = function(socket) {
 
+    if (socket.request.headers["authorization"]) {
+        socket.request.headers["cookie"] = socket.request.headers["authorization"].split(" ")[1] + ";";
+    }
+
     util.sessionMiddleware(socket.request, socket.request.res, async function() {
 
         let sess = socket.request.session.userId && (await User.findOne({
