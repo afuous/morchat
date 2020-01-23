@@ -1,0 +1,134 @@
+.chat-messages {
+	display: block;
+	height: 100%;
+	overflow-y: auto;
+	padding-left: 10px;
+	padding-right: 10px;
+}
+.chat-messages-table {
+	display: table;
+	width: 100%;
+}
+.chat-input-div {
+	display: table-row;
+	height: 0px;
+	text-align: center;
+}
+.chat-input-flex-container {
+	display: flex;
+	width: calc(100% - 10px);
+	margin: 10px;
+}
+.chat-input-textarea {
+	width: 100%;
+	margin-right: 3px;
+	padding: 5px;
+	border-radius: 5px;
+	resize: none;
+	outline: none;
+	border: none;
+	font-size: 14px;
+	font-family: 'exo 2', sans-serif;
+	font-weight: 400;
+	color: #333333;
+	overflow-y: hidden; /* this needs to be changed by javascript */
+}
+.chat-input-textarea:focus {
+	border: 1px solid #ffb524;
+}
+.chat-input-button {
+	height: 30px;
+	width: 78px;
+	background-color: #ffc547;
+	font-size: 18px;
+	/* text-align: center; */
+	/* padding-left: 11px; */
+	margin-right: 10px;
+	border-radius: 5px;
+	border: none;
+	outline: none;
+	font-family: 'exo 2', sans-serif;
+	font-weight: 200;
+}
+.chat-input-button:hover {
+	background-color: #ffb524;
+	cursor: pointer;
+}
+.bubble-wrapper {
+	display: table-row;
+	width: 100%;
+	white-space: pre-wrap;
+	/* min-height: 40px; */
+}
+.chat-bubble {
+	max-width: calc(100% - 100px);
+	display: block;
+	color: black;
+	margin: 10px;
+	border-radius: 5px;
+	font-size: 20px;
+	word-wrap: break-word;
+    word-break: break-all;
+	position: relative;
+}
+.self-bubble {
+	background-color: #ffc547;
+	float: right;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+.other-bubble {
+	background-color: #cccccc;
+	float: left;
+    padding-top: 6px;
+    padding-bottom: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+.self-bubble:after {
+	content: '';
+	position: absolute;
+	border-style: solid;
+	display: block;
+	width: 0;
+	height: 0;
+	z-index: 1;
+	top: 7px;
+	border-color: transparent #ffc547;
+	right: -9px;
+	border-width: 6px 0px 6px 9px;
+}
+.other-bubble:after {
+	content: '';
+	position: absolute;
+	border-style: solid;
+	display: block;
+	width: 0;
+	height: 0;
+	z-index: 1;
+	top: 7px;
+	border-color: transparent #cccccc;
+	left: -9px;
+	border-width: 6px 9px 6px 0px;
+}
+.chat-profpic {
+	width: 30px;
+	height: 30px;
+	object-fit: cover;
+	border-radius: 5px;
+	margin-top: -3px;
+	vertical-align: middle;
+}
+.chat-opponent {
+	margin-top: -10px;
+	display: inline-block;
+	padding-right: 5px;
+	font-weight: 400;
+	margin-bottom: 0;
+	margin-left: 8px;
+}
+.chat-pending-message {
+    color: #777777;
+}

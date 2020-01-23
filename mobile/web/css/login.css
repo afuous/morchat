@@ -1,0 +1,48 @@
+.content {
+    display: block;
+    height: 100%;
+}
+.content-flex-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+}
+.login-table {
+    border-spacing: 10px 20px;
+}
+.description {
+    text-align: right;
+}
+.login-input {
+    padding: 5px;
+    border-radius: 5px;
+    outline: none;
+    border: 1px solid transparent; /* without this adding a border changes the input size */
+    font-size: 14px;
+    font-family: 'exo 2', sans-serif;
+    font-weight: 400;
+    color: #333333;
+}
+.login-input:focus {
+    border: 1px solid #ffb524;
+}
+.login-button {
+    height: 30px;
+    width: 78px;
+    background-color: #ffc547;
+    font-size: 18px;
+    border-radius: 5px;
+    border: none;
+    outline: none;
+    font-family: 'exo 2', sans-serif;
+    font-weight: 200;
+}
+.login-button:hover {
+    background-color: #ffb524;
+    cursor: pointer;
+}
+.login-button-td {
+    text-align: center;
+}

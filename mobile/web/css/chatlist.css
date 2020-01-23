@@ -1,0 +1,28 @@
+.chat-list {
+	display: block;
+	height: 100%;
+	overflow-y: auto;
+	/* max-width: 700px; */
+}
+.chat-list-table {
+	display: table;
+	width: 100%;
+}
+.chat-list-item {
+	border-bottom: 1px solid black;
+	padding: 15px;
+	font-size: 18px;
+	display: flex;
+	align-items: center;
+}
+.chat-list-item:hover {
+    cursor: pointer;
+    background-color: #dddddd;
+}
+.chat-list-image {
+	width: 30px;
+	height: 30px;
+	object-fit: cover;
+	border-radius: 5px;
+	margin-right: 10px;
+}

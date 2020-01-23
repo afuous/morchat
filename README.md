@@ -21,3 +21,7 @@ The server configuration file is `server/config.json` and is automatically gener
 
 The web client configuration file is `web/src/config.json` and is automatically generated after running npm install in `web`.
 - `imgurClientId`: Change this to your Imgur API client id if you want to integrate Imgur uploads to the chat.
+
+## Mobile
+
+In `mobile/web`, run `build.sh` to produce a standalone html file `build.html` containing the mobile website. For testing, use `test.html` without any building necessary.
