@@ -15,9 +15,9 @@ dir="$(dirname "$0")"
 	cat "$dir/css/chat.css"
 	echo '</style>'
 	echo '<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>'
+	echo '<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/autolinker/3.11.1/Autolinker.min.js"></script>'
+	echo '<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/2.0.7/purify.min.js"></script>'
 	echo '<script type="text/javascript">'
-	# cat "$dir/js/socket.io.js"
-	# echo
 	cat "$dir/js/shared.js"
 	echo
 	cat "$dir/js/login.js"

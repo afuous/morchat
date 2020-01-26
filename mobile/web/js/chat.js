@@ -7,6 +7,19 @@ XMLHttpRequest.prototype.send = function() {
 // https://github.com/socketio/socket.io-client/issues/1140#issuecomment-325958737
 // https://github.com/socketio/socket.io/issues/3334
 
+// https://github.com/cure53/DOMPurify/blob/master/demos/hooks-target-blank-demo.html#L31
+DOMPurify.addHook("afterSanitizeAttributes", (node) => {
+    if ("target" in node) {
+        node.setAttribute("target", "_blank");
+        node.setAttribute('rel', 'noopener noreferrer');
+    }
+    if (!node.hasAttribute("target")
+        && (node.hasAttribute("xlink:href") || node.hasAttribute("href"))
+    ) {
+        node.setAttribute("xlink:show", "new");
+    }
+});
+
 function chatPage(chatId) {
 
     if (socket) {
@@ -24,6 +37,11 @@ function chatPage(chatId) {
             },
         },
     });
+
+    function sanitizeHTML(html) {
+        let regex = /<(?!(a\s|\/))/g;
+        return DOMPurify.sanitize(html.replace(regex, "&lt;"));
+    }
 
     // there is no pressing need to add messages loaded over HTTP to the message list
     // for now this array will only contain messages sent or received in this session
@@ -89,7 +107,7 @@ function chatPage(chatId) {
         }
         let pendingElem = tag("div", {className: "bubble-wrapper"}, [
             tag("div", {className: "chat-bubble self-bubble chat-pending-message"}, [
-                content, // TODO: autolinker and such
+                tag("span", {innerHTML: sanitize(Autolinker.link(content))}, []),
             ]),
         ]);
         chatMessagesTable.insertBefore(pendingElem, typingIndicator);
@@ -157,7 +175,7 @@ function chatPage(chatId) {
         if (message.author._id == currentUser._id) {
             return tag("div", {className: "bubble-wrapper"}, [
                 tag("div", {className: "chat-bubble self-bubble"}, [
-                    message.content
+                    tag("span", {innerHTML: Autolinker.link(message.content)}, []),
                 ]),
             ]);
         } else {
@@ -167,7 +185,7 @@ function chatPage(chatId) {
                     tag("p", {className: "chat-opponent"}, [
                         message.author.firstname + " " + message.author.lastname[0] + ":",
                     ]),
-                    message.content,
+                    tag("span", {innerHTML: Autolinker.link(message.content)}, []),
                 ]),
             ]);
         }
