@@ -107,7 +107,7 @@ function chatPage(chatId) {
         }
         let pendingElem = tag("div", {className: "bubble-wrapper"}, [
             tag("div", {className: "chat-bubble self-bubble chat-pending-message"}, [
-                tag("span", {innerHTML: sanitize(Autolinker.link(content))}, []),
+                tag("span", {innerHTML: sanitizeHTML(Autolinker.link(content))}, []),
             ]),
         ]);
         chatMessagesTable.insertBefore(pendingElem, typingIndicator);
@@ -175,7 +175,7 @@ function chatPage(chatId) {
         if (message.author._id == currentUser._id) {
             return tag("div", {className: "bubble-wrapper"}, [
                 tag("div", {className: "chat-bubble self-bubble"}, [
-                    tag("span", {innerHTML: Autolinker.link(message.content)}, []),
+                    tag("span", {innerHTML: sanitizeHTML(Autolinker.link(message.content))}, []),
                 ]),
             ]);
         } else {
@@ -185,7 +185,7 @@ function chatPage(chatId) {
                     tag("p", {className: "chat-opponent"}, [
                         message.author.firstname + " " + message.author.lastname[0] + ":",
                     ]),
-                    tag("span", {innerHTML: Autolinker.link(message.content)}, []),
+                    tag("span", {innerHTML: sanitizeHTML(Autolinker.link(message.content))}, []),
                 ]),
             ]);
         }
