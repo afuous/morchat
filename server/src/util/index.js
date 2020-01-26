@@ -90,6 +90,12 @@ util.removeHTML = function(text) {
     //  text.replace(/\<(?!a|br).*?\>/g, "");
 };
 
+util.caseInsensitiveRegex = function(str) {
+    // https://stackoverflow.com/questions/3561493/is-there-a-regexp-escape-function-in-javascript
+    let escaped = str.replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&");
+    return new RegExp("^" + escaped + "$", "i");
+};
+
 String.prototype.contains = function(arg) {
     return this.indexOf(arg) > -1;
 };

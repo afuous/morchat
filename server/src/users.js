@@ -23,9 +23,9 @@ router.post("/login", checkBody({
 
     let user = await User.findOne({
         $or: [{
-            username: req.body.emailOrUsername,
+            username: util.caseInsensitiveRegex(req.body.emailOrUsername),
         }, {
-            email: req.body.emailOrUsername,
+            email: util.caseInsensitiveRegex(req.body.emailOrUsername),
         }],
     }).select("+password");
 
@@ -115,16 +115,16 @@ router.post("/users", checkBody({
     // check if a user with either same username, email, or phone already exists
     let same = await User.findOne({
         $or: [{
-            username: req.body.username,
+            username: util.caseInsensitiveRegex(req.body.username),
         }, {
-            email: req.body.email,
+            email: util.caseInsensitiveRegex(req.body.email),
         }]
     });
     if (same) {
-        if (same.username == req.body.username) {
+        if (same.username.toLowerCase() == req.body.username.toLowerCase()) {
             return res.status(400).end("Username is taken");
         }
-        if (same.email == req.body.email) {
+        if (same.email.toLowerCase() == req.body.email.toLowerCase()) {
             return res.status(400).end("Email is taken");
         }
     }
@@ -160,9 +160,7 @@ router.post("/users", checkBody({
 
 router.get("/users", checkBody(), requireLogin, handler(async function(req, res) {
 
-    let users = await User.find({
-        team: req.user.team,
-    });
+    let users = await User.find();
 
     res.json(users);
 
@@ -260,9 +258,9 @@ router.post("/forgotPassword", checkBody({
 
     let user = await User.findOne({
         $or: [{
-            email: req.body.emailOrUsername,
+            email: util.caseInsensitiveRegex(req.body.emailOrUsername),
         }, {
-            username: req.body.emailOrUsername,
+            username: util.caseInsensitiveRegex(req.body.emailOrUsername),
         }],
     });
 
