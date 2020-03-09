@@ -25,3 +25,7 @@ The web client configuration file is `web/src/config.json` and is automatically 
 ## Mobile
 
 In `mobile/web`, run `build.sh` to produce a standalone html file `build.html` containing the mobile website. For testing, use `test.html` without any building necessary.
+
+## Push notifications
+
+To get push notifications working on android, first create a project in Firebase. Then download `google-services.json` from [here](https://console.firebase.google.com/project/_/settings/general/) and put it in `mobile/app/android/app/google-services.json`.
