@@ -1,8 +1,10 @@
 function httpRequest(method, path, data) {
     return new Promise((resolve, reject) => {
         method = method.toUpperCase();
-        let url = "https://" + localStorage.server + "/api" + path;
-        // let url = "http://" + localStorage.server + "/api" + path;
+        let url = localStorage.server + "/api" + path;
+        if (!localStorage.server.startsWith("http://") && !localStorage.server.startsWith("https://")) {
+            url = "https://" + url;
+        }
         if (method == "GET" && data) {
             let queryString = "";
             for (let key of Object.keys(data)) {
@@ -67,10 +69,11 @@ function tag(name, props, children) {
 }
 
 function getProfPicElem(url, props, children) {
+    let defaultUrl = "https://www.morteam.com/images/user.jpg"
     return tag("img", {
-        src: url,
+        src: url || defaultUrl,
         onerror: function() {
-            this.src = "https://www.morteam.com/images/user.jpg";
+            this.src = defaultUrl;
             this.onerror = null;
         },
         ...props,
