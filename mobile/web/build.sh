@@ -5,6 +5,7 @@ dir="$(dirname "$0")"
 {
 	echo '<html>'
 	echo '<head>'
+	echo '<title>MorChat</title>'
 	echo '<meta name="viewport" content="width=device-width, initial-scale=1" />'
 	echo '<style type="text/css">'
 	# curl -s 'https://fonts.googleapis.com/css?family=Exo+2:400,300,200'

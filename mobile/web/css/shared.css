@@ -28,6 +28,12 @@ html, body {
     margin-right: 12px;
     margin-top: 8px;
 }
+.navbar-link:hover {
+    cursor: pointer;
+}
+.flex-spacer {
+    flex: 1 1 auto;
+}
 a {
     color: #337ab7;
     text-decoration: none;

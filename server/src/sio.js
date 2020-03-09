@@ -171,7 +171,7 @@ sio.onConnection = function(socket) {
             }, {
                 $set: { "unreadMessages.$.number": 0 },
             });
-        })
+        });
 
         // TODO: if a user has multiple clients and sends a message, display sent message on all clients
 

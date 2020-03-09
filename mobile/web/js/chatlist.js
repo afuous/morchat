@@ -2,11 +2,22 @@ function chatListPage() {
 
     let chatListTable = tag("div", {className: "chat-list-table"});
 
+    async function logOut() {
+        await httpRequest("post", "/logout");
+        localStorage.authorization = null;
+        localStorage.currentUser = null;
+        navigateTo("login");
+    }
+
     let root = tag("div", {className: "big-table"}, [
         tag("div", {className: "navbar"}, [
             tag("div", {className: "navbar-flex-container"}, [
                 tag("div", {className: "navbar-elem"}, [
                     "MorChat",
+                ]),
+                tag("div", {className: "flex-spacer"}),
+                tag("div", {className: "navbar-elem navbar-link", onclick: logOut,}, [
+                    "Log out",
                 ]),
             ]),
         ]),

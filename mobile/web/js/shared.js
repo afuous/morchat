@@ -14,7 +14,11 @@ function httpRequest(method, path, data) {
         xhr.onreadystatechange = function() {
             if (xhr.readyState == 4) {
                 if (xhr.status == 200) {
-                    resolve(JSON.parse(xhr.responseText));
+                    let result = null;
+                    if (xhr.responseText.length > 0) {
+                        result = JSON.parse(xhr.responseText);
+                    }
+                    resolve(result);
                 } else {
                     reject(xhr.responseText);
                 }
