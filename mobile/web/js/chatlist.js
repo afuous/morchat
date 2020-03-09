@@ -6,8 +6,9 @@ function chatListPage() {
         await httpRequest("post", "/logout", {
             mobileDeviceToken: window._mobileDeviceToken,
         });
-        localStorage.authorization = null;
-        localStorage.currentUser = null;
+        localStorage.authorization = "";
+        localStorage.currentUser = "";
+        currentUser = {};
         navigateTo("login");
     }
 
