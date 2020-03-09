@@ -16,8 +16,9 @@ MorChat is a derivative of [MorTeam](https://github.com/mortorqrobotics/morteam-
 
 The server configuration file is `server/config.json` and is automatically generated after running the server once.
 - `sessionSecret`: Change this to a random string and keep it secret.
-- `host`: The host visitors will be visiting in their browser. Necessary for cookie purposes.
+- `host`: The host visitors will be visiting in their browser, for cookie purposes. Probably best to keep this empty.
 - `dbHost`, `dbPort`, `dbName`: To specify the location of the mongodb server.
+- `fcmServerKey`: See push notifications below. Keeping this empty is fine but there will be no push notifications.
 
 The web client configuration file is `web/src/config.json` and is automatically generated after running npm install in `web`.
 - `imgurClientId`: Change this to your Imgur API client id if you want to integrate Imgur uploads to the chat.
@@ -28,4 +29,4 @@ In `mobile/web`, run `build.sh` to produce a standalone html file `build.html` c
 
 ## Push notifications
 
-To get push notifications working on android, first create a project in Firebase. Then download `google-services.json` from [here](https://console.firebase.google.com/project/_/settings/general/) and put it in `mobile/app/android/app/google-services.json`.
+To get push notifications working, first create a project in Firebase. Download `google-services.json` from [here](https://console.firebase.google.com/project/_/settings/general/) and put it in `mobile/app/android/app/google-services.json`. Copy the server key from [here](https://console.firebase.google.com/project/_/settings/cloudmessaging/) and put it in the `fcmServerKey` field of `server/config.json`.

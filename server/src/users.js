@@ -36,6 +36,9 @@ router.post("/login", checkBody({
     if (req.body.mobileDeviceToken
         && user.mobileDeviceTokens.indexOf(req.body.mobileDeviceToken) === -1
     ) {
+        if (!user.mobileDeviceTokens) {
+            user.mobileDeviceTokens = [];
+        }
         user.mobileDeviceTokens.push(req.body.mobileDeviceToken);
         await user.save();
     }

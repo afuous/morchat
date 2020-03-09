@@ -124,5 +124,6 @@ Array.prototype.hasAnythingFrom = function(arr) {
 
 util.middlechecker = require("./middlechecker");
 util.config = require("./config");
+util.fcm = require("./fcm");
 
 module.exports = util;

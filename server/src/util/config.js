@@ -8,6 +8,7 @@ let defaultConfig = {
     dbHost: "localhost",
     dbPort: 27017,
     dbName: "MorChat",
+    fcmServerKey: "",
 };
 
 let configPath = require("path").join(__dirname, "../../config.json");

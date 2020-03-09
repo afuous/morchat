@@ -160,6 +160,28 @@ sio.onConnection = function(socket) {
                 content: content,
             });
 
+            // push notifications
+            let chatsPerUser = await Promise.all(chat.users.map(userId => Chat.find({
+                users: userId,
+            })));
+            let users = await Promise.all(chat.users.map(userId => User.findOne({
+                _id: userId,
+            })));
+            for (let i = 0; i < chat.users.length; i++) {
+                if (chat.users[i].toString() == sess._id.toString()) {
+                    continue;
+                }
+                let numUnread = 0;
+                for (let chatUserIsIn of chatsPerUser[i]) {
+                    for (let obj of chatUserIsIn.unreadMessages) {
+                        if (obj.user.toString() == chat.users[i].toString()) {
+                            numUnread += obj.number;
+                        }
+                    }
+                }
+                util.fcm.sendNotification(users[i], numUnread);
+            }
+
         });
 
         socket.on("read message", async function(data) {
