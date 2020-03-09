@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 void main() => runApp(MyApp());
 
@@ -18,9 +19,11 @@ class MyHomePage extends StatefulWidget {
   _MyHomePageState createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
 
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+
+  final FlutterLocalNotificationsPlugin _notifications = new FlutterLocalNotificationsPlugin();
 
   @override
   void initState() {
@@ -29,6 +32,16 @@ class _MyHomePageState extends State<MyHomePage> {
     _firebaseMessaging.getToken().then((token) {
       print(token);
     });
+
+    _notifications.cancelAll();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _notifications.cancelAll();
+    }
   }
 
   @override
