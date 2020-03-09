@@ -9,6 +9,10 @@ function loginPage() {
         let username = usernameInput.value;
         let password = passwordInput.value;
 
+        let hadError = (errorTextElem.innerHTML != "");
+        errorTextElem.innerHTML = "";
+        let startTime = Date.now();
+
         try {
             let obj = await httpRequest("post", "/login", {
                 emailOrUsername: username,
@@ -22,11 +26,21 @@ function loginPage() {
             currentUser = obj.user;
             navigateTo("chatlist");
         } catch (errorMsg) {
-            // TODO: handle this
+            function showError() {
+                errorTextElem.innerHTML = "";
+                errorTextElem.appendChild(document.createTextNode(errorMsg));
+            }
+            let minWait = 1000;
+            let currentTime = Date.now();
+            if (!hadError || currentTime - startTime > minWait) {
+                showError();
+            } else {
+                setTimeout(showError, minWait + startTime - currentTime);
+            }
         }
     }
 
-    let serverInput = tag("input", {className: "login-input", type: "text"});
+    let serverInput = tag("input", {className: "login-input", type: "text", autocapitalize: "none", autocorrect: "off",});
     let usernameInput = tag("input", {className: "login-input", type: "text", autocapitalize: "none", autocorrect: "off",});
     let passwordInput = tag("input", {className: "login-input", type: "password"});
 
@@ -36,6 +50,8 @@ function loginPage() {
     } else {
         serverInput.autofocus = true;
     }
+
+    let errorTextElem = tag("td", {colSpan: 2, className: "login-center-td"});
 
     let root = tag("div", {className: "big-table"}, [
         tag("div", {className: "navbar"}, [
@@ -78,7 +94,10 @@ function loginPage() {
                             ]),
                         ]),
                         tag("tr", [
-                            tag("td", {colSpan: 2, className: "login-button-td"}, [
+                            errorTextElem,
+                        ]),
+                        tag("tr", [
+                            tag("td", {colSpan: 2, className: "login-center-td"}, [
                                 tag("input", {type: "submit", value: "Login", className: "login-button"}),
                             ]),
                         ]),
