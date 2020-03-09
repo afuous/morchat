@@ -194,8 +194,8 @@ function chatPage(chatId) {
     let root = tag("div", {className: "big-table"}, [
         tag("div", {className: "navbar"}, [
             tag("div", {className: "navbar-flex-container"}, [
-                tag("div", {className: "navbar-elem"}, [
-                    "MorChat",
+                tag("div", {className: "navbar-elem navbar-link", onclick: () => navigateTo("chatlist"),}, [
+                    "Back",
                 ]),
             ]),
         ]),

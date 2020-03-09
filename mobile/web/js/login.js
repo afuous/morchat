@@ -25,7 +25,7 @@ function loginPage() {
     }
 
     let serverInput = tag("input", {className: "login-input", type: "text"});
-    let usernameInput = tag("input", {className: "login-input", type: "text"});
+    let usernameInput = tag("input", {className: "login-input", type: "text", autocapitalize: "none", autocorrect: "off",});
     let passwordInput = tag("input", {className: "login-input", type: "password"});
 
     if (localStorage.server) {
