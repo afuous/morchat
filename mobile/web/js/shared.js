@@ -1,10 +1,7 @@
 function httpRequest(method, path, data) {
     return new Promise((resolve, reject) => {
         method = method.toUpperCase();
-        let url = localStorage.server + "/api" + path;
-        if (!localStorage.server.startsWith("http://") && !localStorage.server.startsWith("https://")) {
-            url = "https://" + url;
-        }
+        let url = "https://" + localStorage.server + "/api" + path;
         if (method == "GET" && data) {
             let queryString = "";
             for (let key of Object.keys(data)) {
