@@ -14,6 +14,8 @@ function loginPage() {
                 emailOrUsername: username,
                 password: password,
                 useCookie: false,
+                // if undefined, this field should not appear in stringified JSON
+                mobileDeviceToken: window._mobileDeviceToken,
             });
             localStorage.authorization = obj.auth;
             localStorage.currentUser = JSON.stringify(obj.user); // TODO: this needs to be updated from time to time somehow

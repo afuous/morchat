@@ -3,7 +3,9 @@ function chatListPage() {
     let chatListTable = tag("div", {className: "chat-list-table"});
 
     async function logOut() {
-        await httpRequest("post", "/logout");
+        await httpRequest("post", "/logout", {
+            mobileDeviceToken: window._mobileDeviceToken,
+        });
         localStorage.authorization = null;
         localStorage.currentUser = null;
         navigateTo("login");

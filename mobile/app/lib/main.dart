@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'dart:convert';
 
 void main() => runApp(MyApp());
 
@@ -30,7 +31,11 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
     super.initState();
     _firebaseMessaging.requestNotificationPermissions();
     _firebaseMessaging.getToken().then((token) {
-      print(token);
+      FlutterWebviewPlugin().onStateChanged.listen((viewState) {
+        if (viewState.type == WebViewState.finishLoad) {
+          FlutterWebviewPlugin().evalJavascript('window._mobileDeviceToken = ' + jsonEncode(token) + ';');
+        }
+      });
     });
 
     _notifications.cancelAll();
