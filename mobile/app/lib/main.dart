@@ -20,12 +20,14 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
-    return WebviewScaffold(
-      url: 'https://bheller.me/morchatmobile.html',
-      withZoom: true,
-      withLocalStorage: true,
-      // https://github.com/fluttercommunity/flutter_webview_plugin/issues/379
-      resizeToAvoidBottomInset: true,
+    return SafeArea(
+      child: WebviewScaffold(
+        url: 'https://bheller.me/morchatmobile.html',
+        withZoom: true,
+        withLocalStorage: true,
+        // https://github.com/fluttercommunity/flutter_webview_plugin/issues/379
+        resizeToAvoidBottomInset: true,
+      ),
     );
   }
 }
