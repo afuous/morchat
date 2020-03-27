@@ -40,7 +40,15 @@ function chatListPage() {
                     imageUrl = otherUser.profPicUrl;
                     name = otherUser.firstname + " " + otherUser.lastname;
                 }
-                let chatItem = tag("div", {className: "chat-list-item"}, [
+                let numUnread = chat.unreadMessages.find(obj =>
+                    obj.user == currentUser._id
+                ).number;
+                let style = "";
+                if (numUnread > 0) {
+                    name = "(" + numUnread + ") " + name;
+                    style = "font-weight: 400;";
+                }
+                let chatItem = tag("div", {className: "chat-list-item", style: style,}, [
                     getProfPicElem(imageUrl, {className: "chat-list-image"}),
                     name,
                 ]);
