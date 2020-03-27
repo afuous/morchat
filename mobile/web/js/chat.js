@@ -38,6 +38,19 @@ function chatPage(chatId) {
         },
     });
 
+    let isWindowFocused;
+    window.onfocus = function() {
+        isWindowFocused = true;
+        socket.emit("read message", {
+            chatId: chatId,
+        });
+    };
+    window.onblur = function() {
+        isWindowFocused = false;
+    };
+    window.onfocus();
+
+
     function sanitizeHTML(html) {
         let regex = /<(?!(a\s|\/))/g;
         return DOMPurify.sanitize(html.replace(regex, "&lt;"));
@@ -51,6 +64,11 @@ function chatPage(chatId) {
     socket.on("message", function(data) {
         if (data.chatId == chatId) {
             addMessage(data.message);
+        }
+        if (isWindowFocused) {
+        socket.emit("read message", {
+            chatId: chatId,
+        });
         }
     });
 
