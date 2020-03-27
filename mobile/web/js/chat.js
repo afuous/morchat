@@ -120,6 +120,7 @@ function chatPage(chatId) {
             content: content,
         });
         chatInput.value = "";
+        chatInput.focus();
     }
 
     let chatMessagesTable = tag("div", {className: "chat-messages-table"});
