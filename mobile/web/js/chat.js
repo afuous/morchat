@@ -160,6 +160,17 @@ function chatPage(chatId) {
     typingIndicator.style.display = "none"; // default table-row
     chatMessagesTable.appendChild(typingIndicator);
 
+    let lastChatMessagesHeight = 0;
+    requestAnimationFrame(function() {
+        lastChatMessagesHeight = chatMessages.clientHeight;
+    });
+    window.onresize = function() {
+        if (chatMessages.clientHeight < lastChatMessagesHeight) {
+            chatMessages.scrollTop += lastChatMessagesHeight - chatMessages.clientHeight;
+        }
+        lastChatMessagesHeight = chatMessages.clientHeight;
+    };
+
     let loadingMessages = false;
     let allMessagesLoaded = false;
     let numMessagesLoaded = 0;
