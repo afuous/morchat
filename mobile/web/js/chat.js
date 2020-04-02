@@ -66,9 +66,9 @@ function chatPage(chatId) {
             addMessage(data.message);
         }
         if (isWindowFocused) {
-        socket.emit("read message", {
-            chatId: chatId,
-        });
+            socket.emit("read message", {
+                chatId: chatId,
+            });
         }
     });
 
@@ -84,7 +84,7 @@ function chatPage(chatId) {
             addMessage({
                 author: currentUser,
                 content: data.content,
-                timestamp: Date.now(),
+                timestamp: data.timestamp,
             });
         }
     });

@@ -158,6 +158,7 @@ sio.onConnection = function(socket) {
             socket.emit("message-sent", {
                 chatId: chatId,
                 content: content,
+                timestamp: now,
             });
 
             // push notifications
