@@ -4,7 +4,7 @@ import Radium from "radium";
 import ajax from "~/util/ajax";
 import update from "react/lib/update";
 import TextBox from "~/shared/components/forms/TextBox";
-import { fullName, userSearch } from "~/util";
+import { fullName, userSearch, currentUser } from "~/util";
 import styles from "~/shared/styles/usersSelect";
 
 const UserItem = Radium((props) => {
@@ -68,7 +68,7 @@ export default class UsersSelect extends React.Component {
     }
 
     getShownUsers = () => {
-        return this.state.allUsers.filter(userSearch(this.state.query));
+        return this.state.allUsers.filter(user => user._id != currentUser._id).filter(userSearch(this.state.query));
     }
 
     render() {

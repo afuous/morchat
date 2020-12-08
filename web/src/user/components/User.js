@@ -4,9 +4,9 @@ import Radium from "radium";
 import Root, { pageInit } from "~/shared/components/Root";
 import Navbar from "~/shared/components/navbar/Navbar";
 import Leftbar from "./leftbar/Leftbar";
-import Grid from "react-bootstrap/lib/Grid";
-import Row from "react-bootstrap/lib/Row";
-import Col from "react-bootstrap/lib/Col";
+import PushConfig from "./PushConfig";
+import { currentUser, pageOptions } from "~/util";
+import config from "~/config.json";
 
 import { makeStore, soundsMiddleware } from "~/util/redux";
 import sharedReducers from "~/shared/reducers";
@@ -33,6 +33,7 @@ export default class User extends React.Component {
             <Root pageName="user" store={store}>
                 <Navbar />
                 <Leftbar />
+                {currentUser._id == pageOptions.userId && config.webPushPublicKey && <PushConfig />}
             </Root>
         )
     }

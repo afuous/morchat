@@ -53,6 +53,13 @@ var userSchema = new Schema({
         }],
         default: [],
     },
+    webPushSubscriptionStrs: {
+        type: [{
+            type: String, // store subscription object as json string
+            required: true,
+        }],
+        default: [],
+    },
     email_confirmed: {
         type: Boolean,
         default: false,

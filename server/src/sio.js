@@ -180,7 +180,7 @@ sio.onConnection = function(socket) {
                         }
                     }
                 }
-                util.fcm.sendNotification(users[i], numUnread);
+                util.fcm.sendNotifications(users[i], numUnread, sess.firstname + " " + sess.lastname[0] + ": " + content);
             }
 
         });

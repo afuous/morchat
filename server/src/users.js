@@ -69,23 +69,21 @@ router.post("/logout", checkBody({
     mobileDeviceToken: types.maybe(types.string),
 }), requireLogin, handler(async function(req, res) {
     // destroy user session cookie
-    req.session.destroy(function(err) {
+    req.session.destroy(async function(err) {
         if (err) {
             console.error(err);
-            res.status(500).end("Logout unsuccessful");
-        } else if (req.body.mobileDeviceToken) {
+            return res.status(500).end("Logout unsuccessful");
+        }
+
+        if (req.body.mobileDeviceToken) {
             let index = req.user.mobileDeviceTokens.indexOf(req.body.mobileDeviceToken);
             if (index !== -1) {
                 req.user.mobileDeviceTokens.splice(index, 1);
-                req.user.save().then(() => {
-                    res.end();
-                });
-            } else {
-                res.end();
+                await req.user.save();
             }
-        } else {
-            res.end();
         }
+
+        res.end();
     });
 }));
 
@@ -297,6 +295,51 @@ router.put("/users/token/:emailToken/verify", checkBody(), handler(async functio
     }, {
         $set: { email_confirmed: true },
     });
+
+    res.end();
+
+}));
+
+router.post("/addWebPushSubscription", checkBody({
+    webPushSubscriptionStr: types.string,
+}), handler(async function(req, res) {
+
+    try {
+        JSON.parse(req.body.webPushSubscriptionStr);
+    } catch (e) {
+        return res.status(400).end("Invalid subscription JSON");
+    }
+
+    await User.updateOne({
+        _id: req.user._id,
+    }, {
+        $push: {
+            webPushSubscriptionStrs: req.body.webPushSubscriptionStr,
+        },
+    });
+
+    res.end();
+
+}));
+
+router.post("/removeWebPushSubscription", checkBody({
+    webPushSubscriptionStr: types.string,
+}), handler(async function(req, res) {
+
+    let subscription;
+    try {
+        subscription = JSON.parse(req.body.webPushSubscriptionStr);
+    } catch (e) {
+        return res.status(400).end("Invalid subscription JSON");
+    }
+
+    for (let i = 0; i < req.user.webPushSubscriptionStrs.length; i++) {
+        if (JSON.parse(req.user.webPushSubscriptionStrs[i]).endpoint == subscription.endpoint) {
+            req.user.webPushSubscriptionStrs.splice(i, 1);
+            i--;
+        }
+    }
+    await req.user.save();
 
     res.end();
 

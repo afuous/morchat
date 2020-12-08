@@ -9,6 +9,8 @@ let defaultConfig = {
     dbPort: 27017,
     dbName: "MorChat",
     fcmServerKey: "",
+    webPushPublicKey: "",
+    webPushPrivateKey: "",
 };
 
 let configPath = require("path").join(__dirname, "../../config.json");
