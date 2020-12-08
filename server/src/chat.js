@@ -226,28 +226,28 @@ router.get("/chats/id/:chatId/log", handler(async function(req, res) {
         }
     }
 
-    let messages;
-    let chunkSize = 1000;
-    let messageNum = 1;
-    let stop = false;
-    let seenMessageIds = {};
+    // https://stackoverflow.com/questions/21387969/mongodb-count-the-number-of-items-in-an-array/22152786#22152786
+    let messageCount = (await Chat.aggregate([
+        { $match: { _id: chat._id } },
+        { $project: { arrLength: { $size: "$messages" } } },
+    ]))[0].arrLength;
 
-    for (let i = 0; !stop; i++) {
-        messages = (await Chat.findOne({
+    let chunkSize = 1000;
+    let messageNum = 0;
+
+    while (messageNum < messageCount) {
+        let messages = (await Chat.findOne({
             _id: req.params.chatId,
         })
             .select("+messages")
-            .slice("messages", [-1 - (i + 1) * chunkSize, chunkSize])
+            .slice("messages", [Math.max(0, messageCount - messageNum - chunkSize), Math.min(chunkSize, messageCount - messageNum)])
             .populate("messages.author")
             .exec()
         ).messages;
 
         for (let message of messages.reverse()) {
-            if (seenMessageIds[message._id]) {
-                stop = true;
-                continue;
-            }
-            seenMessageIds[message._id] = true;
+
+            messageNum++;
 
             let authorName = message.author.firstname + " " + message.author.lastname[0];
             let date = new Date(message.timestamp);
@@ -259,7 +259,6 @@ router.get("/chats/id/:chatId/log", handler(async function(req, res) {
                 + message.content + "\n"
             );
 
-            messageNum++;
         }
     }
     res.end();
