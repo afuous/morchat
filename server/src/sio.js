@@ -149,6 +149,12 @@ sio.onConnection = function(socket) {
                         AND cu1.user_id = mdt.user_id
                     `, [chatId], client);
 
+                    await db.queryOne(`
+                        UPDATE chats
+                        SET updated_at = $1
+                        WHERE id = $2
+                    `, [new Date(), chatId], client);
+
                 });
             } catch (e) {
                 // whatever

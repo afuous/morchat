@@ -5,7 +5,7 @@ function onlineClients(state = [], action) {
         case "JOIN_ONLINE_CLIENT":
             return state.concat(action.userId);
         case "LEAVE_ONLINE_CLIENT":
-            return state.filter(userId => userId !== action.userId);
+            return state.filter(userId => userId != action.userId);
         default:
             return state;
     }

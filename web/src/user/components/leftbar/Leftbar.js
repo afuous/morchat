@@ -65,7 +65,7 @@ export default class Leftbar extends React.Component {
     }
 
     renderProfilePic = () => {
-        let isCurrentUser = currentUser.id === this.state.user.id;
+        let isCurrentUser = currentUser.id == this.state.user.id;
         return (
             <ProfilePicture
                 user={this.state.user}

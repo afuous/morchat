@@ -17,7 +17,7 @@ export const leaveOnlineClient = (userId) => ({
 })
 
 export const receiveMessage = ({ chatId, message, isTwoPeople, name, sound }) => (dispatch) => {
-    if (currentUser.id !== message.author.id){
+    if (currentUser.id != message.author.id){
         if (sound) {
             dispatch({
                 type: "NOTHING_HERE",

@@ -56,9 +56,9 @@ class MessageList extends React.Component {
         const threshold = 200;
 
         // this a little more verbose than necessary, but it is easier
-        if (topMessageId !== this.lastTopMessageId) {
+        if (topMessageId != this.lastTopMessageId) {
             noChangeNewHeight();
-        } else if (bottomMessageId !== this.lastBottomMessageId) {
+        } else if (bottomMessageId != this.lastBottomMessageId) {
             if (offset > threshold) {
                 noChange();
             } else {

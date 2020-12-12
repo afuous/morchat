@@ -22,16 +22,16 @@ export const addChat = (chat) => async (dispatch) => {
 export const receiveMessage = ({ chatId, message, isTwoPeople, name }) => (dispatch, getState) => {
     const { currentChatId } = getState();
     let meta = {};
-    if (!window.__isFocused && (currentUser.id !== message.author.id)) {
+    if (!window.__isFocused && (currentUser.id != message.author.id)) {
         meta = {
             sound: "chatMessageNotification",
         };
     }
-    if (currentChatId !== chatId) {
+    if (currentChatId != chatId) {
         dispatch(receiveMessageShared({ chatId, message, isTwoPeople, name, sound: false }));
     }
 
-    let markAsRead = currentChatId === chatId && window.__isFocused;
+    let markAsRead = currentChatId == chatId && window.__isFocused;
     dispatch({
         type: "RECEIVE_MESSAGE_SUCCESS",
         chatId,
