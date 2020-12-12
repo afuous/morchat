@@ -6,8 +6,10 @@ let defaultConfig = {
     sessionSecret: "secret",
     host: "",
     dbHost: "localhost",
-    dbPort: 27017,
-    dbName: "MorChat",
+    dbPort: 5432,
+    dbUsername: "morchat",
+    dbPassword: "morchat",
+    dbName: "morchat",
     fcmServerKey: "",
 };
 

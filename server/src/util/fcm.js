@@ -1,15 +1,11 @@
 "use strict";
 
-let User = require("../models/User");
 let config = require("./config");
 
 let fcm = {};
 
-fcm.sendNotification = function(user, numUnread) {
+fcm.sendNotification = function(mobileDeviceToken, numUnread) {
     if (!config.fcmServerKey) {
-        return;
-    }
-    if (!user.mobileDeviceTokens || user.mobileDeviceTokens.length == 0) {
         return;
     }
     if (numUnread == 0) {
@@ -30,7 +26,7 @@ fcm.sendNotification = function(user, numUnread) {
         // but it is an issue if many fail
         // should probably log it
     }).end(JSON.stringify({
-        registration_ids: user.mobileDeviceTokens,
+        registration_ids: [mobileDeviceToken],
         notification: {
             title: "",
             body: numUnread + " unread messages",

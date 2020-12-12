@@ -51,9 +51,7 @@ pageInit(Chat);
 // show the number of unread messages in the page title
 store.subscribe(() => {
     let chats = store.getState().chats;
-    let numUnread = chats.map(chat =>
-        chat.unreadMessages.find(({ user }) => user == currentUser._id).number
-    ).reduce((a, b) => a + b, 0);
+    let numUnread = chats.map(chat => chat.unreadMessages).reduce((a, b) => a + b, 0);
     let mainTitle = "MorChat - Chat";
     if (numUnread == 0) {
         document.title = mainTitle;

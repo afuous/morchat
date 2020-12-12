@@ -29,7 +29,7 @@ export const fullName = (user) => {
 }
 
 export const otherUser = (users, ownId) => {
-    if (users[0]._id == ownId) {
+    if (users[0].id == ownId) {
         return users[1]
     } else {
         return users[0]

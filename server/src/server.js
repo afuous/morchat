@@ -4,16 +4,12 @@ let io = global.io;
 
 let express = require("express");
 let fs = require("fs");
-let mongoose = require("mongoose");
-let ObjectId = mongoose.Types.ObjectId;
 let bodyParser = require("body-parser");
 let compression = require("compression");
 let util = require("./util");
-let User = require("./models/User");
 let sio = require("./sio");
 let config = require("./util/config");
-
-mongoose.connect("mongodb://" + config.dbHost + ":" + config.dbPort + "/" + config.dbName, { useNewUrlParser: true });
+let db = require("./util/db");
 
 // main app that is exported
 let app = express();
@@ -47,10 +43,7 @@ app.use(util.sessionMiddleware);
 app.use(async function(req, res, next) {
     if (req.session && req.session.userId) {
         try {
-            let user = await User.findOne({
-                _id: req.session.userId,
-            });
-            req.user = user;
+            req.user = await db.queryOne("SELECT * FROM users WHERE id = $1", [req.session.userId]);
             next();
         } catch (err) {
             // TODO: handle more cleanly the case where userId is not found for if the user is deleted or something

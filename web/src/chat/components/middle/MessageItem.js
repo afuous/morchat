@@ -26,7 +26,7 @@ export default class MessageItem extends React.PureComponent {
         return (
             <Tooltip id="message-author">
                 <span style={styles.authorTooltip}>
-                    {fullName(message.author) + ", " + parseDateAndTime(message.timestamp)}
+                    {fullName(message.author) + ", " + parseDateAndTime(message.createdAt)}
                 </span>
             </Tooltip>
         )
@@ -34,7 +34,7 @@ export default class MessageItem extends React.PureComponent {
 
     render() {
         const message = this.props.message;
-        if (message.author._id == currentUser._id) {
+        if (message.author.id == currentUser.id) {
             return (
                 <div style={styles.bubbleWrapper}>
                     <div
@@ -65,7 +65,7 @@ export default class MessageItem extends React.PureComponent {
                             style={styles.chatOpponent}
                             onClick={() => {
                                 window.location.assign(
-                                    `/profiles/id/${message.author._id}`
+                                    `/profiles/id/${message.author.id}`
                                 )
                             }}
                             // TODO: make a user link component

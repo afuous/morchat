@@ -7,7 +7,11 @@ import { imgurClientId } from "~/config.json";
 
 export const addChatSync = (chat) => ({
     type: "ADD_CHAT_SUCCESS",
-    chat,
+    chat: {
+        ...chat,
+        messages: [],
+        unreadMessages: 0,
+    },
 })
 
 export const addChat = (chat) => async (dispatch) => {
@@ -18,7 +22,7 @@ export const addChat = (chat) => async (dispatch) => {
 export const receiveMessage = ({ chatId, message, isTwoPeople, name }) => (dispatch, getState) => {
     const { currentChatId } = getState();
     let meta = {};
-    if (!window.__isFocused && (currentUser._id !== message.author._id)) {
+    if (!window.__isFocused && (currentUser.id !== message.author.id)) {
         meta = {
             sound: "chatMessageNotification",
         };
@@ -122,14 +126,18 @@ export const loadMessages = () => async (dispatch, getState) => {
     }
     isLoading = true;
     const { currentChatId, chats } = getState();
-    const chat = chats.find(chat => chat._id == currentChatId);
+    const chat = chats.find(chat => chat.id == currentChatId);
     if (!chat) {
         return;
     }
+    let skip = chat.messages.length;
     const { data } = await request("GET",
-        `/chats/id/${currentChatId}/messages?skip=${chat.messages.length}`
+        `/chats/id/${currentChatId}/messages?skip=${skip}`
         + "&" + Date.now()
     );
+    for (let i = 0; i < data.length; i++) {
+        data[i]._id = skip + i;
+    }
     isLoading = false;
     if (data.length === 0) {
         dispatch({
@@ -175,10 +183,12 @@ export const setInputSize = (heightDiff) => ({
 })
 
 export const loadChats = (selected) => async (dispatch, getState) => {
-    const { currentTab } = getState();
     const { data } = await request("GET", "/chats?" + Date.now());
-    const chatId = data.some(chat => chat._id === selected) ? selected
-        : (data.length > 0 ? data[0]._id : null);
+    const chatId = data.some(chat => chat.id == selected) ? selected
+        : (data.length > 0 ? data[0].id : null);
+    for (let chat of data) {
+        chat.messages = [];
+    }
     dispatch({
         type: "LOAD_CHATS_SUCCESS",
         chats: data,

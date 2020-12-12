@@ -8,7 +8,7 @@ const announcements = (state = [], action) => {
             return state.concat(action.announcements)
         case "DELETE_ANNOUNCEMENT_SUCCESS":
             return state.filter(announcement => (
-                announcement._id != action.announcementId
+                announcement.id != action.announcementId
             ))
         default:
             return state

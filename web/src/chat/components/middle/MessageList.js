@@ -134,7 +134,7 @@ class MessageList extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        chat: state.chats.find(chat => chat._id == state.currentChatId),
+        chat: state.chats.find(chat => chat.id == state.currentChatId),
         heightDiff: state.inputSize.heightDiff,
     }
 }

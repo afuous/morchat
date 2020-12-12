@@ -1,7 +1,5 @@
 "use strict";
 
-let User = require("../models/User");
-
 let middlechecker = {};
 
 middlechecker.checkBody = (pattern) => (req, res, next) => {
@@ -30,13 +28,6 @@ let types = middlechecker.types = {
     },
     boolean: (obj) => {
         return typeof obj === "boolean";
-    },
-    objectId: (Model) => (obj) => {
-        // Model is ignored
-        // same as string, but more descriptive
-        // maybe it should have some extra functionality
-        // cannot check for existence here
-        return typeof obj === "string";
     },
     any: (obj) => {
         return true;

@@ -33,20 +33,8 @@ function isDropdownOpen(state = false, action) {
     }
 }
 
-const initialTab = "intra";
-
-function currentTab(state = initialTab, action) {
-    switch (action.type) {
-        case "SET_TAB":
-            return action.tab
-        default:
-            return state
-    }
-}
-
 export default {
     onlineClients,
     isLeftbarOpen,
     isDropdownOpen,
-    currentTab,
 }
