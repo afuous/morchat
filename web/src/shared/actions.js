@@ -26,7 +26,7 @@ export const receiveMessage = ({ chatId, message, isTwoPeople, name, sound }) =>
                 },
             });
         }
-        const title = isTwoPeople ? fullName(message.author) : fullName(message.author) + " in " + name;
+        const title = name ? fullName(message.author) + " in " + name : fullName(message.author);
         notify(title, message.content, () => {
             if (window.location.pathname !== "/chat") {
                 window.location.assign("/chat");
