@@ -29,10 +29,10 @@ let router = express.Router();
 
 router.post("/chats", checkBody(types.union([{
     isTwoPeople: types.value(true),
-    otherUserId: types.integer,
+    otherUserId: types.id,
 }, {
     isTwoPeople: types.value(false),
-    users: [types.integer],
+    users: [types.id],
     name: types.string,
 }])), requireLogin, handler(async function(req, res) {
 

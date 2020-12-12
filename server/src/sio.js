@@ -196,7 +196,7 @@ sio.onConnection = function(socket) {
         // TODO: if a user has multiple clients and sends a message, display sent message on all clients
 
         socket.on("get clients", function() {
-            socket.emit("get clients", Object.keys(onlineClients));
+            socket.emit("get clients", Object.keys(onlineClients).map(str => parseInt(str)));
         });
 
         socket.on("start typing", function(data) {

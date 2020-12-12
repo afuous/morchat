@@ -45,6 +45,7 @@ let types = middlechecker.types = {
         return models.some(model => typecheck(model, obj));
     },
 };
+types.id = types.integer;
 
 module.exports = middlechecker;
 
