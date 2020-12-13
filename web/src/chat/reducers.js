@@ -65,7 +65,7 @@ function chats(state = initialChats, action) {
                             author: currentUser,
                             content: action.content,
                             isLoading: true,
-                            _id: action.messageId,
+                            createdAt: action.timestamp,
                         }],
                     },
                     wasTyping: {

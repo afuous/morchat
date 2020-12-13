@@ -35,12 +35,7 @@ export const receiveMessage = ({ chatId, message, isTwoPeople, name }) => (dispa
     dispatch({
         type: "RECEIVE_MESSAGE_SUCCESS",
         chatId,
-        message: {
-            ...message,
-            // giving each message a unique id lets the view know which
-            // messages are new
-            _id: getRandomString(),
-        },
+        message,
         meta, // this is part of redux-sounds
         timestamp: new Date(),
         markAsRead,
@@ -74,7 +69,7 @@ export const sendMessage = (content) => (dispatch, getState) => {
         type: "SEND_MESSAGE_LOADING",
         chatId: currentChatId,
         content,
-        messageId: getRandomString(),
+        timestamp: new Date(),
     });
 }
 
@@ -135,9 +130,6 @@ export const loadMessages = () => async (dispatch, getState) => {
         `/chats/id/${currentChatId}/messages?skip=${skip}`
         + "&" + Date.now()
     );
-    for (let i = 0; i < data.length; i++) {
-        data[i]._id = skip + i;
-    }
     isLoading = false;
     if (data.length === 0) {
         dispatch({

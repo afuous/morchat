@@ -37,9 +37,9 @@ class MessageList extends React.Component {
         const scrollHeight = this.$container.prop("scrollHeight");
         const heightDiffDiff = this.props.heightDiff - this.lastHeightDiff;
         const topMessageId = this.props.chat.messages[0]
-            && this.props.chat.messages[0]._id;
+            && this.props.chat.messages[0].createdAt;
         const bottomMessageId = this.props.chat.messages[0]
-            && this.props.chat.messages[this.props.chat.messages.length - 1]._id;
+            && this.props.chat.messages[this.props.chat.messages.length - 1].createdAt;
         const isTyping = this.props.chat.isTyping;
         const offset = this.lastScrollHeight - this.lastScrollTop - height;
         const scrollHeightDiff = scrollHeight - this.lastScrollHeight;
@@ -118,7 +118,7 @@ class MessageList extends React.Component {
                 {this.props.chat && this.props.chat.messages.map(message => (
                     <MessageItem
                         message={message}
-                        key={message._id}
+                        key={message.createdAt}
                     />
                 ))}
                 <TypingIndicator
