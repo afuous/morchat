@@ -84,7 +84,7 @@ function chatPage(chatId) {
             addMessage({
                 author: currentUser,
                 content: data.content,
-                timestamp: data.timestamp,
+                createdAt: data.timestamp,
             });
         }
     });
@@ -92,7 +92,7 @@ function chatPage(chatId) {
     function addMessage(message) {
         let index = messageList.length;
         while (index > 0) {
-            if (new Date(messageList[index - 1].message.timestamp).getTime() < new Date(message.timestamp).getTime()) {
+            if (new Date(messageList[index - 1].message.createdAt).getTime() < new Date(message.createdAt).getTime()) {
                 break;
             }
             index--;
@@ -202,7 +202,7 @@ function chatPage(chatId) {
     chatMessages.onscroll = checkScrollAndLoadMessages;
 
     function getMessageElem(message) {
-        if (message.author._id == currentUser._id) {
+        if (message.author.id == currentUser.id) {
             return tag("div", {className: "bubble-wrapper"}, [
                 tag("div", {className: "chat-bubble self-bubble"}, [
                     tag("span", {innerHTML: sanitizeHTML(Autolinker.link(message.content))}, []),
