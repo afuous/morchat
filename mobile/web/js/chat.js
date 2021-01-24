@@ -99,7 +99,7 @@ function chatPage(chatId) {
         }
         let messageElem = getMessageElem(message);
         if (index == 0) {
-            chatMessagesTable.insertBefore(messageElem, chatMessagesTable.childNodes[numMessagesLoaded].nextSibling);
+            chatMessagesTable.insertBefore(messageElem, chatMessagesTable.childNodes[numMessagesLoaded - 1].nextSibling);
         } else {
             chatMessagesTable.insertBefore(messageElem, messageList[index - 1].elem.nextSibling);
         }
@@ -107,6 +107,10 @@ function chatPage(chatId) {
             message: message,
             elem: messageElem,
         });
+        fixScrollAfterNewMessage();
+    }
+
+    function fixScrollAfterNewMessage() {
         if (chatMessages.scrollHeight - (chatMessages.scrollTop + chatMessages.clientHeight) < 200) {
             chatMessages.scrollTop = chatMessages.scrollHeight;
         }
@@ -129,6 +133,7 @@ function chatPage(chatId) {
             ]),
         ]);
         chatMessagesTable.insertBefore(pendingElem, typingIndicator);
+        fixScrollAfterNewMessage();
         pendingMessageList.push({
             content: content,
             elem: pendingElem,
