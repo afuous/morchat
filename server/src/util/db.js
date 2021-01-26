@@ -159,6 +159,7 @@ db.transactionSerializable = async function(func) {
                 // TODO: log this, i am curious how much it actually happens
                 continue;
             }
+            await client.query("ROLLBACK");
             throw e;
         } finally {
             client.release();
