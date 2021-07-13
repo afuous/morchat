@@ -16,7 +16,7 @@
     "express": "^4.15.2",
     "express-session": "^1.15.1",
     "mongoose": "^5.4.20",
-    "nodemailer": "^3.1.4",
+    "nodemailer": "^6.4.16",
     "pg": "^8.3.3",
     "socket.io": "^2.1.1"
   }
