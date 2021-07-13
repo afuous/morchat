@@ -36,13 +36,11 @@ function chatListPage() {
                 let imageUrl = "https://www.morteam.com/images/group.png";
                 let name = chat.name;
                 if (chat.isTwoPeople) {
-                    let otherUser = chat.users.find(user => user._id != currentUser._id);
+                    let otherUser = chat.users.find(user => user.id != currentUser.id);
                     imageUrl = otherUser.profPicUrl;
                     name = otherUser.firstname + " " + otherUser.lastname;
                 }
-                let numUnread = chat.unreadMessages.find(obj =>
-                    obj.user == currentUser._id
-                ).number;
+                let numUnread = chat.unreadMessages;
                 let style = "";
                 if (numUnread > 0) {
                     name = "(" + numUnread + ") " + name;
@@ -53,7 +51,7 @@ function chatListPage() {
                     name,
                 ]);
                 chatItem.onclick = function() {
-                    navigateTo("chat-" + chat._id);
+                    navigateTo("chat-" + chat.id);
                 };
                 chatListTable.appendChild(chatItem);
             }

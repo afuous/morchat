@@ -44,7 +44,7 @@ class UserLabel extends React.Component {
                 <span
                     style={styles.userDisplay.span}
                     onClick={() =>
-                        window.location.assign("/profiles/id/" + this.props.user._id)
+                        window.location.assign("/profiles/id/" + this.props.user.id)
                     }
                 >
                     <ProfilePicture
@@ -70,7 +70,7 @@ const UserList = Radium((props) => {
                     {props.users.map(user => (
                         <UserLabel
                             user={user}
-                            key={user._id}
+                            key={user.id}
                         />
                     ))}
                 </div>

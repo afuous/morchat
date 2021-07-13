@@ -73,7 +73,7 @@ export default class SearchBox extends React.Component {
                         .map(user =>
                             <SearchDropItem
                                 obj={user}
-                                key={user._id}
+                                key={user.id}
                                 type={"user"}
                             />
                         )

@@ -7,7 +7,11 @@ import { imgurClientId } from "~/config.json";
 
 export const addChatSync = (chat) => ({
     type: "ADD_CHAT_SUCCESS",
-    chat,
+    chat: {
+        ...chat,
+        messages: [],
+        unreadMessages: 0,
+    },
 })
 
 export const addChat = (chat) => async (dispatch) => {
@@ -18,25 +22,20 @@ export const addChat = (chat) => async (dispatch) => {
 export const receiveMessage = ({ chatId, message, isTwoPeople, name }) => (dispatch, getState) => {
     const { currentChatId } = getState();
     let meta = {};
-    if (!window.__isFocused && (currentUser._id !== message.author._id)) {
+    if (!window.__isFocused && (currentUser.id != message.author.id)) {
         meta = {
             sound: "chatMessageNotification",
         };
     }
-    if (currentChatId !== chatId) {
+    if (currentChatId != chatId) {
         dispatch(receiveMessageShared({ chatId, message, isTwoPeople, name, sound: false }));
     }
 
-    let markAsRead = currentChatId === chatId && window.__isFocused;
+    let markAsRead = currentChatId == chatId && window.__isFocused;
     dispatch({
         type: "RECEIVE_MESSAGE_SUCCESS",
         chatId,
-        message: {
-            ...message,
-            // giving each message a unique id lets the view know which
-            // messages are new
-            _id: getRandomString(),
-        },
+        message,
         meta, // this is part of redux-sounds
         timestamp: new Date(),
         markAsRead,
@@ -70,7 +69,7 @@ export const sendMessage = (content) => (dispatch, getState) => {
         type: "SEND_MESSAGE_LOADING",
         chatId: currentChatId,
         content,
-        messageId: getRandomString(),
+        timestamp: new Date(),
     });
 }
 
@@ -122,12 +121,13 @@ export const loadMessages = () => async (dispatch, getState) => {
     }
     isLoading = true;
     const { currentChatId, chats } = getState();
-    const chat = chats.find(chat => chat._id == currentChatId);
+    const chat = chats.find(chat => chat.id == currentChatId);
     if (!chat) {
         return;
     }
+    let skip = chat.messages.length;
     const { data } = await request("GET",
-        `/chats/id/${currentChatId}/messages?skip=${chat.messages.length}`
+        `/chats/id/${currentChatId}/messages?skip=${skip}`
         + "&" + Date.now()
     );
     isLoading = false;
@@ -175,10 +175,12 @@ export const setInputSize = (heightDiff) => ({
 })
 
 export const loadChats = (selected) => async (dispatch, getState) => {
-    const { currentTab } = getState();
     const { data } = await request("GET", "/chats?" + Date.now());
-    const chatId = data.some(chat => chat._id === selected) ? selected
-        : (data.length > 0 ? data[0]._id : null);
+    const chatId = data.some(chat => chat.id == selected) ? selected
+        : (data.length > 0 ? data[0].id : null);
+    for (let chat of data) {
+        chat.messages = [];
+    }
     dispatch({
         type: "LOAD_CHATS_SUCCESS",
         chats: data,

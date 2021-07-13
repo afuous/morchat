@@ -29,8 +29,8 @@ class ComposeModal extends React.Component {
 
     handleSubmit = async () => {
         let users = this.state.users
-            .map(u => u._id)
-            .filter(userId => userId != currentUser._id);
+            .map(u => u.id)
+            .filter(userId => userId != currentUser.id);
         if (users.length === 1) {
             this.props.dispatch(addChat({
                 isTwoPeople: true,
@@ -87,10 +87,4 @@ class ComposeModal extends React.Component {
 
 }
 
-const mapStateToProps = (state) => {
-    return {
-        currentTab: state.currentTab,
-    }
-}
-
-export default connect(mapStateToProps)(ComposeModal);
+export default connect()(ComposeModal);

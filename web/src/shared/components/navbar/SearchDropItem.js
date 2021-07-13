@@ -19,7 +19,7 @@ export default class SearchDropItem extends React.Component {
         if (this.props.type === "user") {
             return(
                 <Link
-                    location={"/profiles/id/" + this.props.obj._id}
+                    location={"/profiles/id/" + this.props.obj.id}
                     style={styles.link}
                 >
                     <li style={styles.searchDropItem.li}>

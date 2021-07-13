@@ -22,7 +22,7 @@ class ProfilePicture extends React.Component {
 
     getIndicator = () => {
         if (this.props.hasIndicator) {
-            if (this.props.onlineClients.indexOf(this.props.user._id) === -1) {
+            if (this.props.onlineClients.indexOf(this.props.user.id) === -1) {
                 return styles.offline;
             }
             return styles.online;

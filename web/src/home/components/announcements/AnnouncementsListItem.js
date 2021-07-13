@@ -27,7 +27,7 @@ class AnnouncementsListItem extends React.Component {
     }
 
     renderDeleteButton = () => {
-        if (currentUser._id == this.props.announcement.author._id) {
+        if (currentUser.id == this.props.announcement.author.id) {
             return (
                 <div>
                     <RadiumGlyphicon
@@ -38,7 +38,7 @@ class AnnouncementsListItem extends React.Component {
                     <ConfirmModal
                         { ...modalProps(this, "isModalOpen") }
                         action={() => this.props.dispatch(
-                            deleteAnnouncement(this.props.announcement._id)
+                            deleteAnnouncement(this.props.announcement.id)
                         )}
                         text="Are you sure you would like to delete this announcement?"
                     />
@@ -56,7 +56,7 @@ class AnnouncementsListItem extends React.Component {
                         style={{ display: "inline-block" }}
                         onClick={() => {
                             window.location.assign(
-                                `/profiles/id/${announcement.author._id}`
+                                `/profiles/id/${announcement.author.id}`
                             );
                         }}
                     >
@@ -72,7 +72,7 @@ class AnnouncementsListItem extends React.Component {
                         </span>
                     </div>
                     <span style={styles.time}>
-                        {" - " + parseDateAndTime(announcement.timestamp)}
+                        {" - " + parseDateAndTime(announcement.createdAt)}
                     </span>
                     {this.renderDeleteButton()}
                 </div>

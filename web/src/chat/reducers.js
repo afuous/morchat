@@ -5,7 +5,6 @@ const initialChats = [];
 
 function chats(state = initialChats, action) {
     let index;
-    let unreadMessagesIndex;
     let newState;
     switch (action.type) {
         case "LOAD_CHATS_PENDING":
@@ -15,7 +14,7 @@ function chats(state = initialChats, action) {
         case "ADD_CHAT_SUCCESS":
             return [action.chat].concat(state)
         case "SET_CHAT_NAME_SUCCESS":
-            index = state.findIndex(chat => chat._id === action.chatId);
+            index = state.findIndex(chat => chat.id == action.chatId);
             // state[index].name = action.name
             return update(state, {
                 [index]: {
@@ -25,15 +24,13 @@ function chats(state = initialChats, action) {
                 },
             })
         case "RECEIVE_MESSAGE_SUCCESS":
-            index = state.findIndex(chat => chat._id === action.chatId);
-            unreadMessagesIndex = state[index].unreadMessages.findIndex(obj =>
-                    obj.user === currentUser._id);
+            index = state.findIndex(chat => chat.id == action.chatId);
             newState = update(state, {
                 [index]: {
                     messages: {
                         $push: [action.message],
                     },
-                    updated_at: {
+                    updatedAt: {
                         $set: action.timestamp,
                     },
                     isTyping: {
@@ -43,39 +40,24 @@ function chats(state = initialChats, action) {
                         $set: false,
                     },
                     unreadMessages: {
-                        [unreadMessagesIndex]: {
-                            number: {
-                                $set: state[index].unreadMessages[unreadMessagesIndex].number
-                                    + (action.markAsRead ? 0 : 1),
-                            }
-                        }
+                        $set: state[index].unreadMessages + (action.markAsRead ? 0 : 1),
                     }
                 },
             })
             return newState.sort((a, b) => (
-                new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime()
+                new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
             ));
         case "MARK_MESSAGES_READ":
-            index = state.findIndex(chat => chat._id === action.chatId);
-            unreadMessagesIndex = state[index].unreadMessages.findIndex(obj =>
-                    obj.user === currentUser._id);
-            // TODO: the client should only be storing the number of unread messages for this user
-            // no need to have the whole array for the other users too, and really,
-            // one user should not be able to get this information for other users
-            // this is equivalent to read receipts which are not supposed to exist currently
+            index = state.findIndex(chat => chat.id == action.chatId);
             return update(state, {
                 [index]: {
                     unreadMessages: {
-                        [unreadMessagesIndex]: {
-                            number: {
-                                $set: 0,
-                            }
-                        }
+                        $set: 0,
                     }
                 },
             })
         case "SEND_MESSAGE_LOADING":
-            index = state.findIndex(chat => chat._id === action.chatId);
+            index = state.findIndex(chat => chat.id == action.chatId);
             return update(state, {
                 [index]: {
                     messages: {
@@ -83,7 +65,7 @@ function chats(state = initialChats, action) {
                             author: currentUser,
                             content: action.content,
                             isLoading: true,
-                            _id: action.messageId,
+                            createdAt: action.timestamp,
                         }],
                     },
                     wasTyping: {
@@ -92,7 +74,7 @@ function chats(state = initialChats, action) {
                 },
             })
         case "SEND_MESSAGE_SUCCESS":
-            index = state.findIndex(chat => chat._id === action.chatId);
+            index = state.findIndex(chat => chat.id == action.chatId);
             const index2 = state[index].messages.findIndex(msg => msg.isLoading);
             newState = update(state, {
                 [index]: {
@@ -106,16 +88,16 @@ function chats(state = initialChats, action) {
                             },
                         },
                     },
-                    updated_at: {
+                    updatedAt: {
                         $set: action.timestamp,
                     },
                 },
             })
             return newState.sort((a, b) => (
-                new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime()
+                new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
             ));
         case "LOAD_MESSAGES_SUCCESS":
-            index = state.findIndex(chat => chat._id === action.chatId);
+            index = state.findIndex(chat => chat.id == action.chatId);
             return update(state, {
                 [index]: {
                     messages: {
@@ -124,7 +106,7 @@ function chats(state = initialChats, action) {
                 },
             })
         case "ALL_MESSAGES_LOADED":
-            index = state.findIndex(chat => chat._id === action.chatId);
+            index = state.findIndex(chat => chat.id == action.chatId);
             return update(state, {
                 [index]: {
                     areAllMessagesLoaded: {
@@ -133,7 +115,7 @@ function chats(state = initialChats, action) {
                 },
             })
         case "SET_IS_TYPING":
-            index = state.findIndex(chat => chat._id === action.chatId);
+            index = state.findIndex(chat => chat.id == action.chatId);
             if (index === -1) {
                 // avoid throwing errors if chats have not loaded yet
                 return state;
@@ -149,17 +131,11 @@ function chats(state = initialChats, action) {
                 },
             })
         case "SET_CURRENT_CHAT_ID":
-            index = state.findIndex(chat => chat._id === action.chatId);
-            unreadMessagesIndex = state[index].unreadMessages.findIndex(obj =>
-                    obj.user === currentUser._id);
+            index = state.findIndex(chat => chat.id == action.chatId);
             newState = update(state, {
                 [index]: {
                     unreadMessages: {
-                        [unreadMessagesIndex]: {
-                            number: {
-                                $set: 0
-                            }
-                        }
+                        $set: 0,
                     }
                 }
             });
@@ -184,13 +160,13 @@ function currentChatId(state = initialCurrentChatId, action) {
             if (action.chatId) {
                 return action.chatId
             } else if (!state && action.chats.length > 0) {
-                return action.chats[0]._id
+                return action.chats[0].id
             } else {
                 return null
             }
         case "ADD_CHAT_SUCCESS":
             if (!state) {
-                return action.chat._id
+                return action.chat.id
             }
             return state
         case "SET_CURRENT_CHAT_ID":

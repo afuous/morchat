@@ -50,7 +50,7 @@ export default class UsersSelect extends React.Component {
     }
 
     isUserSelected = (user) => {
-        return this.props.selected.some(u => u._id == user._id);
+        return this.props.selected.some(u => u.id == user.id);
     }
 
     onUserClick = (user) => {
@@ -84,7 +84,7 @@ export default class UsersSelect extends React.Component {
                 <div style={styles.div}>
                         {this.getShownUsers().map(user => (
                             <UserItem
-                                key={user._id}
+                                key={user.id}
                                 user={user}
                                 onClick={() => this.onUserClick(user)}
                                 isSelected={this.isUserSelected(user)}

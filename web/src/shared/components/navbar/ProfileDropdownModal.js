@@ -34,7 +34,7 @@ export default class ProfileDropdownModal extends React.Component {
             >
                 <ul>
                     <Link
-                        location={"/profiles/id/" + currentUser._id}
+                        location={"/profiles/id/" + currentUser.id}
                         style={styles.link}
                     >
                         <li

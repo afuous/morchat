@@ -24,7 +24,7 @@ const UserListItem = Radium(props => {
             />
             <span
                 style={[styles.span, styles.memberSpan]}
-                onClick={() => window.location.assign("/profiles/id/" + props.user._id)}
+                onClick={() => window.location.assign("/profiles/id/" + props.user.id)}
             >
                 {fullName(props.user)}
             </span>
@@ -74,7 +74,7 @@ class OptionsModal extends React.Component {
     }
 
     handleDownloadLog = async () => {
-        window.open("/api/chats/id/" + this.props.chat._id + "/log");
+        window.open("/api/chats/id/" + this.props.chat.id + "/log");
     }
 
     renderNameEdit = () => {
@@ -98,7 +98,7 @@ class OptionsModal extends React.Component {
                     {this.props.chat.users.map(user => (
                         <UserListItem
                             user={user}
-                            key={user._id}
+                            key={user.id}
                         />
                     ))}
                 </ul>

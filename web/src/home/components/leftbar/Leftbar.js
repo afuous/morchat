@@ -22,7 +22,7 @@ class Leftbar extends React.Component {
 
                 <LeftbarButton
                     text="View Profile"
-                    onClick={() => window.location.assign("/profiles/id/" + currentUser._id)}
+                    onClick={() => window.location.assign("/profiles/id/" + currentUser.id)}
                 />
                 <LeftbarButton
                     text="Log Out"

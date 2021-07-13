@@ -25,7 +25,7 @@ class Leftbar extends React.Component {
 
     chatTitle = (chat) => {
         if (chat.isTwoPeople) {
-            return fullName(otherUser(chat.users, currentUser._id))
+            return fullName(otherUser(chat.users, currentUser.id))
         } else {
             return chat.name
         }
@@ -48,7 +48,6 @@ class Leftbar extends React.Component {
             <LeftbarContainer { ...leftbarProps(this) }>
                 <LeftbarButton
                     onClick={() => this.setState({ isComposeModalOpen: true })}
-                    style={(this.props.currentTab === "intra" || currentUser.isAdmin()) ? {} : {display: "none"}}
                 >
                     <Glyphicon glyph="pencil" style={{ marginRight: "5px" }} />
                     Compose
@@ -64,11 +63,10 @@ class Leftbar extends React.Component {
                 </li>
                 {this.getSearchedChats().map(chat => (
                     <ChatItem
-                        key={chat._id}
+                        key={chat.id}
                         chat={chat}
                         title={this.chatTitle(chat)}
-                        hasUnreadMessages={chat.unreadMessages.find(obj =>
-                            obj.user === currentUser._id).number > 0}
+                        hasUnreadMessages={chat.unreadMessages > 0}
                     />
                 ))}
                 <ComposeModal
@@ -83,7 +81,6 @@ class Leftbar extends React.Component {
 const mapStateToProps = (state) => {
     return {
         chats: state.chats,
-        currentTab: state.currentTab,
         isLeftbarOpen: state.isLeftbarOpen,
     }
 }

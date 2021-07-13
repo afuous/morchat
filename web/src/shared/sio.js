@@ -12,12 +12,12 @@ export function initListeners(socket, dispatch) {
         dispatch(setOnlineClients(userIds));
     });
 
-    socket.on("joined", ({ _id }) => {
-        dispatch(joinOnlineClient(_id));
+    socket.on("joined", ({ id }) => {
+        dispatch(joinOnlineClient(id));
     });
 
-    socket.on("left", ({ _id }) => {
-        dispatch(leaveOnlineClient(_id));
+    socket.on("left", ({ id }) => {
+        dispatch(leaveOnlineClient(id));
     });
 
     emit("get clients");

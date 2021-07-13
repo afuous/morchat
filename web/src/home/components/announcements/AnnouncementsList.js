@@ -29,7 +29,7 @@ class AnnouncementsList extends React.Component {
             <div style={styles.container}>
                 {this.props.announcements.map(announcement => (
                     <AnnouncementsListItem
-                        key={announcement._id}
+                        key={announcement.id}
                         announcement={announcement}
                     />
                 ))}

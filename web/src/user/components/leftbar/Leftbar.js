@@ -48,7 +48,7 @@ export default class Leftbar extends React.Component {
     }
 
     renderConditionalButtons = () => {
-        if (currentUser._id == this.state.user._id) {
+        if (currentUser.id == this.state.user.id) {
             return (
                 <div>
                     <ButtonItem
@@ -65,7 +65,7 @@ export default class Leftbar extends React.Component {
     }
 
     renderProfilePic = () => {
-        let isCurrentUser = currentUser._id === this.state.user._id;
+        let isCurrentUser = currentUser.id == this.state.user.id;
         return (
             <ProfilePicture
                 user={this.state.user}

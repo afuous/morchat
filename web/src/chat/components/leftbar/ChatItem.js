@@ -30,7 +30,7 @@ class ChatItem extends React.Component {
 
     chatImage = () => {
         if (this.props.chat.isTwoPeople) {
-            const other = otherUser(this.props.chat.users, currentUser._id)
+            const other = otherUser(this.props.chat.users, currentUser.id)
             return (
                 <ProfilePicture
                     user={other}
@@ -56,8 +56,8 @@ class ChatItem extends React.Component {
     render() {
         return (
             <LeftbarButton
-                isSelected={this.props.chat._id == this.props.currentChatId}
-                onClick={() => this.props.dispatch(setCurrentChatId(this.props.chat._id))}
+                isSelected={this.props.chat.id == this.props.currentChatId}
+                onClick={() => this.props.dispatch(setCurrentChatId(this.props.chat.id))}
             >
                 {this.chatImage()}
 
@@ -87,7 +87,7 @@ class ChatItem extends React.Component {
                     hasUserList={!this.props.chat.isTwoPeople}
                     hasNameEdit={!this.props.chat.isTwoPeople}
                     onNameChange={(name) => this.props.dispatch(setChatName({
-                        chatId: this.props.chat._id,
+                        chatId: this.props.chat.id,
                         name,
                     }))}
                     { ...modalProps(this, "isOptionsModalOpen") }

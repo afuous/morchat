@@ -5,7 +5,7 @@ function onlineClients(state = [], action) {
         case "JOIN_ONLINE_CLIENT":
             return state.concat(action.userId);
         case "LEAVE_ONLINE_CLIENT":
-            return state.filter(userId => userId !== action.userId);
+            return state.filter(userId => userId != action.userId);
         default:
             return state;
     }
@@ -33,20 +33,8 @@ function isDropdownOpen(state = false, action) {
     }
 }
 
-const initialTab = "intra";
-
-function currentTab(state = initialTab, action) {
-    switch (action.type) {
-        case "SET_TAB":
-            return action.tab
-        default:
-            return state
-    }
-}
-
 export default {
     onlineClients,
     isLeftbarOpen,
     isDropdownOpen,
-    currentTab,
 }

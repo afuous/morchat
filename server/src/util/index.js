@@ -4,10 +4,10 @@
  * This file is meant to keep all of the variables and functions that are used among several different modules.
  */
 let fs = require("fs");
-let mongoose = require("mongoose");
 let session = require("express-session");
-let MongoStore = require("connect-mongo")(session);
+let pgSession = require("connect-pg-simple")(session);
 let config = require("./config");
+let db = require("./db");
 
 let util = {};
 
@@ -16,11 +16,20 @@ util.handler = function(func) {
         return func
             .apply(null, arguments)
             .catch(function(err) {
-                console.error(err);
-                res.status(500).end("Internal server error");
-                // TODO: add real error handling and logging
+                if (err instanceof util.HttpError) {
+                    res.status(err.code).end(err.message);
+                } else {
+                    console.error(err);
+                    res.status(500).end("Internal server error");
+                    // TODO: add real error handling and logging
+                }
             });
     };
+};
+
+util.HttpError = function(code, message) {
+    this.code = code;
+    this.message = message;
 };
 
 // quick way to send a 404: not found error
@@ -38,8 +47,8 @@ util.sessionMiddleware = session({
     cookie: {
         domain: config.host,
     },
-    store: new MongoStore({
-        mongooseConnection: mongoose.connection,
+    store: new pgSession({
+        pool: db.pool,
     }),
 });
 
@@ -125,5 +134,7 @@ Array.prototype.hasAnythingFrom = function(arr) {
 util.middlechecker = require("./middlechecker");
 util.config = require("./config");
 util.fcm = require("./fcm");
+util.db = require("./db");
+util.auth = require("./auth");
 
 module.exports = util;

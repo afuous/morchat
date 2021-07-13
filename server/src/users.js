@@ -1,15 +1,14 @@
 "use strict";
 
 let express = require("express");
-let ObjectId = require("mongoose").Types.ObjectId;
 let util = require("./util");
 
 let handler = util.handler;
 let requireLogin = util.requireLogin;
 let checkBody = util.middlechecker.checkBody;
 let types = util.middlechecker.types;
-
-let User = require("./models/User");
+let HttpError = util.HttpError;
+let db = util.db;
 
 
 let router = express.Router();
@@ -21,32 +20,39 @@ router.post("/login", checkBody({
     useCookie: types.maybe(types.boolean),
 }), handler(async function(req, res) {
 
-    let user = await User.findOne({
-        $or: [{
-            username: util.caseInsensitiveRegex(req.body.emailOrUsername),
-        }, {
-            email: util.caseInsensitiveRegex(req.body.emailOrUsername),
-        }],
-    }).select("+password");
+    let user;
 
-    if (!user || !(await user.comparePassword(req.body.password))) {
-        return res.status(400).end("Invalid login credentials");
-    }
+    await db.transaction(async client => {
 
-    if (req.body.mobileDeviceToken
-        && user.mobileDeviceTokens.indexOf(req.body.mobileDeviceToken) === -1
-    ) {
-        if (!user.mobileDeviceTokens) {
-            user.mobileDeviceTokens = [];
+        user = await db.queryOne(`
+            SELECT *
+            FROM users
+            WHERE username = $1 or email = $1
+        `, [req.body.emailOrUsername], client);
+        if (!user) {
+            throw new HttpError(400, "Invalid login credentials");
         }
-        user.mobileDeviceTokens.push(req.body.mobileDeviceToken);
-        await user.save();
-    }
 
-    delete user.password;
+        let passwordEntry = await db.queryOne(`
+            SELECT *
+            FROM password_entries
+            WHERE user_id = $1
+        `, [user.id], client);
+        if (!await util.auth.checkPassword(req.body.password, passwordEntry.passwordHash)) {
+            throw new HttpError(400, "Invalid login credentials");
+        }
 
-    // store user info in cookies
-    req.session.userId = user._id;
+        if (req.body.mobileDeviceToken) {
+            await db.queryOne(`
+                INSERT INTO mobile_device_tokens
+                (user_id, token)
+                VALUES ($1, $2)
+                ON CONFLICT DO NOTHING
+            `, [user.id, req.body.mobileDeviceToken], client);
+        }
+    });
+
+    req.session.userId = user.id;
 
     req.session.cookie.maxAge = 365 * 24 * 60 * 60 * 1000;
 
@@ -67,27 +73,25 @@ router.post("/login", checkBody({
 
 router.post("/logout", checkBody({
     mobileDeviceToken: types.maybe(types.string),
-}), requireLogin, handler(async function(req, res) {
+}), requireLogin, function(req, res) {
     // destroy user session cookie
-    req.session.destroy(function(err) {
+    req.session.destroy(async function(err) {
         if (err) {
             console.error(err);
-            res.status(500).end("Logout unsuccessful");
-        } else if (req.body.mobileDeviceToken) {
-            let index = req.user.mobileDeviceTokens.indexOf(req.body.mobileDeviceToken);
-            if (index !== -1) {
-                req.user.mobileDeviceTokens.splice(index, 1);
-                req.user.save().then(() => {
-                    res.end();
-                });
-            } else {
-                res.end();
-            }
-        } else {
-            res.end();
+            return res.status(500).end("Logout unsuccessful");
         }
+
+        if (req.body.mobileDeviceToken) {
+            await db.queryOne(`
+                DELETE FROM mobile_device_tokens
+                WHERE user_id = $1 AND token = $2
+            `, [req.user.id, req.body.mobileDeviceToken]);
+        }
+
+        res.end();
+
     });
-}));
+});
 
 router.post("/users", checkBody({
     username: types.string,
@@ -108,54 +112,64 @@ router.post("/users", checkBody({
 
     // if phone and email are valid (see util.js for validation methods)
     if (!util.validateEmail(req.body.email)) {
-        return res.status(400).end("Invalid email");
+        throw new HttpError(400, "Invalid email");
     }
     if (!util.validatePhone(req.body.phone)) {
-        return res.status(400).end("Invalid phone number");
+        throw new HttpError(400, "Invalid phone number");
     }
 
-    // TODO: is this necessary with the unique thing in User.js?
-    // check if a user with either same username, email, or phone already exists
-    let same = await User.findOne({
-        $or: [{
-            username: util.caseInsensitiveRegex(req.body.username),
-        }, {
-            email: util.caseInsensitiveRegex(req.body.email),
-        }]
-    });
-    if (same) {
-        if (same.username.toLowerCase() == req.body.username.toLowerCase()) {
-            return res.status(400).end("Username is taken");
-        }
-        if (same.email.toLowerCase() == req.body.email.toLowerCase()) {
-            return res.status(400).end("Email is taken");
-        }
+    if (req.body.username.indexOf("@") != -1) {
+        // this may seem odd but I want to make sure the username is not an email
+        // if the username can be an email then there is ambiguity when logging in
+        // since then it isn't clear what emailOrUsername is
+        // and could potentially match multiple users!
+        throw new HttpError(400, "Username cannot contain @");
     }
 
-    let userInfo = {
-        username: req.body.username,
-        password: req.body.password,
-        firstname: req.body.firstname,
-        lastname: req.body.lastname,
-        email: req.body.email,
-        phone: req.body.phone,
-        profPicUrl: req.body.profPicUrl,
-    };
-
+    let passwordHash = await util.auth.generatePasswordHash(req.body.password);
     let user;
-    try {
-        user = await User.create(userInfo);
-    } catch (err) {
-        console.log(err)
-        return res.status(400).end("Invalid user info");
-    }
 
-    // let emailToken = await user.assignEmailVerif();
-    // await util.mail.sendEmail({
-    //     to: req.body.email,
-    //     subject: "MorTeam Email Verification",
-    //     html: "Welcome to MorTeam. Please verify your email by going to https://morteam.com/users/token/" + emailToken + "/verify/",
-    // });
+    await db.transactionSerializable(async client => {
+
+        let same = await db.queryOne(`
+            SELECT *
+            FROM users
+            WHERE username = $1 OR email = $2
+        `, [req.body.username, req.body.email], client);
+        if (same) {
+            if (same.username.toLowerCase() == req.body.username.toLowerCase()) {
+                throw new HttpError(400, "Username is taken");
+            }
+            if (same.email.toLowerCase() == req.body.email.toLowerCase()) {
+                throw new HttpError(400, "Email is taken");
+            }
+        }
+
+        user = await db.queryOne(`
+            INSERT INTO users
+            (username, firstname, lastname, email, phone, prof_pic_url, created_at)
+            VALUES ($1, $2, $3, $4, $5, $6, $7)
+            RETURNING *
+        `, [
+            req.body.username, req.body.firstname, req.body.lastname,
+            req.body.email, req.body.phone, req.body.profPicUrl,
+            new Date(),
+        ], client);
+        if (!user) {
+            throw new HttpError(400, "Invalid user info");
+        }
+
+        let passwordEntry = db.queryOne(`
+            INSERT INTO password_entries
+            (user_id, password_hash)
+            VALUES ($1, $2)
+            RETURNING *
+        `, [user.id, passwordHash], client);
+        if (!passwordEntry) {
+            throw new HttpError(400, "Error creating user");
+        }
+
+    });
 
     res.json(user);
 
@@ -163,7 +177,7 @@ router.post("/users", checkBody({
 
 router.get("/users", checkBody(), requireLogin, handler(async function(req, res) {
 
-    let users = await User.find();
+    let users = await db.queryAll("SELECT * FROM users");
 
     res.json(users);
 
@@ -171,9 +185,9 @@ router.get("/users", checkBody(), requireLogin, handler(async function(req, res)
 
 router.get("/users/id/:userId", checkBody(), requireLogin, handler(async function(req, res) {
 
-    let user = await User.findOne({
-        _id: req.params.userId
-    });
+    let user = await db.queryOne(`
+        SELECT * FROM users WHERE id = $1
+    `, [req.params.userId]);
 
     res.json(user);
 
@@ -183,18 +197,14 @@ router.get("/users/search", checkBody({
     search: types.string,
 }), requireLogin, handler(async function(req, res) {
 
-    let regexString = String(req.query.search).trim().replace(/\s/g, "|");
-    let re = new RegExp(regexString, "ig");
+    let regexString = String(req.query.search).trim().replace(/\s+/g, "|");
 
-    // find maximum of 10 users that match the search criteria
-    let users = await User.find({
-        team: req.user.team,
-        $or: [{
-            firstname: re,
-        }, {
-            lastname: re,
-        }],
-    }).limit(10);
+    let users = await db.queryAll(`
+        SELECT *
+        FROM users
+        WHERE firstname ~* $1 OR lastname ~* $1
+        LIMIT 10
+    `, [regexString]);
 
     res.json(users);
 
@@ -205,19 +215,34 @@ router.put("/password", checkBody({
     newPassword: types.string,
 }), requireLogin, handler(async function(req, res) {
 
-    let user = await User.findOne({
-        _id: req.user._id
-    }, "+password");
+    // This transaction should use explicit locking (FOR NO KEY UPDATE) instead
+    // of a serializable transaction. This is because comparing the supplied
+    // old password and the true password hash has to happen in between the
+    // SELECT and the UPDATE, and this comparison takes significant work. It's
+    // no good for there to be any needless repetition of hashing going on.
 
-    // check if old password is correct
-    if (!(await user.comparePassword(req.body.oldPassword))) {
-        return res.status(403).end("Your old password is incorrect");
-    }
+    await db.transaction(async client => {
 
-    // set and save new password (password is automatically encrypted. see /models/User.js)
-    user.password = req.body.newPassword;
-    await user.save();
-    // TODO: there should be a method on user to create a new encrypted password instead of doing it like this
+        let passwordEntry = await db.queryOne(`
+            SELECT *
+            FROM password_entries
+            WHERE user_id = $1
+            FOR NO KEY UPDATE
+        `, [req.user.id], client);
+
+        if (!(await util.auth.checkPassword(req.body.oldPassword, passwordEntry.passwordHash))) {
+            throw new HttpError(403, "Your old password is incorrect");
+        }
+
+        let newPasswordHash = await util.auth.generatePasswordHash(req.body.newPassword);
+
+        await db.queryOne(`
+            UPDATE password_entries
+            SET password_hash = $1
+            WHERE user_id = $2
+        `, [newPasswordHash, req.user.id], client);
+
+    });
 
     res.end();
 
@@ -232,21 +257,23 @@ router.put("/profile", checkBody({
 }), requireLogin, handler(async function(req, res) {
 
     if (!util.validateEmail(req.body.email)) {
-        return res.status(400).end("Invalid email address");
+        throw new HttpError(400, "Invalid email address");
     }
     if (!util.validatePhone(req.body.phone)) {
-        return res.status(400).end("Invalid phone number");
+        throw new HttpError(400, "Invalid phone number");
     }
 
-    req.user.firstname = req.body.firstname;
-    req.user.lastname = req.body.lastname;
-    req.user.email = req.body.email;
-    req.user.phone = req.body.phone;
-    req.user.profPicUrl = req.body.profPicUrl;
+    let user = await db.queryOne(`
+        UPDATE users
+        SET firstname = $1, lastname = $2, email = $3, phone = $4, prof_pic_url = $5
+        WHERE id = $6
+        RETURNING *
+    `, [
+        req.body.firstname, req.body.lastname, req.body.email, req.body.phone, req.body.profPicUrl,
+        req.user.id,
+    ]);
 
-    await req.user.save();
-
-    res.json(req.user);
+    res.json(user);
 
 }));
 
@@ -255,51 +282,5 @@ router.get("/users/self", checkBody(), requireLogin, handler(async function(req,
     res.json(req.user);
 }));
 
-router.post("/forgotPassword", checkBody({
-    emailOrUsername: types.string,
-}), handler(async function(req, res) {
-
-    let user = await User.findOne({
-        $or: [{
-            email: util.caseInsensitiveRegex(req.body.emailOrUsername),
-        }, {
-            username: util.caseInsensitiveRegex(req.body.emailOrUsername),
-        }],
-    });
-
-    if (!user) {
-        return res.status(400).end("User not found");
-    }
-
-    let newPassword = await user.assignNewPassword();
-    await user.save();
-
-    // TODO: we are emailing passwords in plaintext
-    // they are temporary passwords but still
-    // see http://security.stackexchange.com/questions/32589/temporary-passwords-e-mailed-out-as-plain-text
-    // should be an access token instead of the actual password
-
-    // email user new password
-    await util.mail.sendEmail({
-        to: user.email,
-        subject: "New MorTeam Password Request",
-        html: "It seems like you requested to reset your password. Your new password is " + newPassword + ". Feel free to reset it after you log in.",
-    });
-
-    res.end();
-
-}));
-
-router.put("/users/token/:emailToken/verify", checkBody(), handler(async function(req, res) {
-
-    let user = await User.findOneAndUpdate({
-        email_token: req.params.emailToken,
-    }, {
-        $set: { email_confirmed: true },
-    });
-
-    res.end();
-
-}));
 
 module.exports = router;
