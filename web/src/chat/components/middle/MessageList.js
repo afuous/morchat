@@ -118,7 +118,7 @@ class MessageList extends React.Component {
                 {this.props.chat && this.props.chat.messages.map(message => (
                     <MessageItem
                         message={message}
-                        key={message.createdAt}
+                        key={new Date(message.createdAt).getTime()}
                     />
                 ))}
                 <TypingIndicator
