@@ -131,9 +131,9 @@ sio.onConnection = function(socket) {
                     chatUsers = await db.queryAll(`
                         UPDATE chat_users
                         SET unread_messages = unread_messages + 1
-                        WHERE chat_id = $1
+                        WHERE chat_id = $1 and user_id != $2
                         RETURNING *
-                    `, [chatId], client);
+                    `, [chatId, sess.id], client);
 
                     chat = await db.queryOne(`
                         SELECT *
@@ -165,7 +165,7 @@ sio.onConnection = function(socket) {
                 }
             }
 
-            emitToUsers(chatUsers.map(obj => obj.userId), "message", {
+            emitToUsers(chatUsers.map(obj => obj.userId).concat([sess.id]), "message", {
                 chatId: chatId,
                 message: message,
                 isTwoPeople: chat.isTwoPeople,
