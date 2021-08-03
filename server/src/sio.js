@@ -11,11 +11,13 @@ let onlineClients = {};
 let sio = {};
 
 let emitToUsers = async function(userIds, name, data, except) {
-    except = except && except.toString();
+    // except is either undefined or a socket
     for (let userId of userIds) {
-        if (userId in onlineClients && userId != except) {
+        if (userId in onlineClients) {
             for (let sock of onlineClients[userId].sockets) {
-                sock.emit(name, data);
+                if (sock != except) {
+                    sock.emit(name, data);
+                }
             }
         }
     }
@@ -129,9 +131,9 @@ sio.onConnection = function(socket) {
                     chatUsers = await db.queryAll(`
                         UPDATE chat_users
                         SET unread_messages = unread_messages + 1
-                        WHERE chat_id = $1 and user_id != $2
+                        WHERE chat_id = $1
                         RETURNING *
-                    `, [chatId, sess.id], client);
+                    `, [chatId], client);
 
                     chat = await db.queryOne(`
                         SELECT *
@@ -168,7 +170,7 @@ sio.onConnection = function(socket) {
                 message: message,
                 isTwoPeople: chat.isTwoPeople,
                 name: chat.name,
-            });
+            }, socket);
 
             socket.emit("message-sent", {
                 chatId: chatId,
