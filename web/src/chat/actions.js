@@ -31,7 +31,7 @@ export const receiveMessage = ({ chatId, message, isTwoPeople, name }) => (dispa
         dispatch(receiveMessageShared({ chatId, message, isTwoPeople, name, sound: false }));
     }
 
-    let markAsRead = currentChatId == chatId && window.__isFocused;
+    let markAsRead = (currentChatId == chatId && window.__isFocused) || currentUser.id == message.author.id;
     dispatch({
         type: "RECEIVE_MESSAGE_SUCCESS",
         chatId,
