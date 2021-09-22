@@ -14,6 +14,18 @@ const filterMessage = (content) => (
     allowOnlyTags(["a", "br"], content)
 )
 
+function formatForHtml(text) {
+    let replacements = [
+        [/&/g, "&amp;"],
+        [/</g, "&lt;"],
+        [/>/g, "&gt;"]
+    ];
+    for (let replacement of replacements) {
+        text = text.replace(replacement[0], replacement[1]);
+    }
+    return text;
+}
+
 @Radium
 export default class MessageItem extends React.PureComponent {
 
@@ -42,7 +54,7 @@ export default class MessageItem extends React.PureComponent {
                             message.isLoading ? styles.selfBubbleLoading : styles.selfBubble
                         }
                     >
-                        <span dangerouslySetInnerHTML={{ __html: filterMessage(link(message.content)) }} />
+                        <span dangerouslySetInnerHTML={{ __html: filterMessage(link(formatForHtml(message.content))) }} />
                         <div style={styles.selfTriangle} />
                     </div>
                 </div>
@@ -74,7 +86,7 @@ export default class MessageItem extends React.PureComponent {
                         </p>
                         <span
                             dangerouslySetInnerHTML={{
-                                __html: filterMessage(link(message.content))
+                                __html: filterMessage(link(formatForHtml(message.content)))
                             }}
                         />
                         <div style={styles.otherTriangle} />

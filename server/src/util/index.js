@@ -86,25 +86,6 @@ util.requireLogin = function(req, res, next) {
     }
 };
 
-util.removeHTML = function(text) {
-    let replacements = [
-        [/&/g, "&amp;"],
-        [/</g, "&lt;"],
-        [/>/g, "&gt;"]
-    ];
-    for (let replacement of replacements) {
-        text = text.replace(replacement[0], replacement[1]);
-    }
-    return text;
-    //  text.replace(/\<(?!a|br).*?\>/g, "");
-};
-
-util.caseInsensitiveRegex = function(str) {
-    // https://stackoverflow.com/questions/3561493/is-there-a-regexp-escape-function-in-javascript
-    let escaped = str.replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&");
-    return new RegExp("^" + escaped + "$", "i");
-};
-
 String.prototype.contains = function(arg) {
     return this.indexOf(arg) > -1;
 };

@@ -98,8 +98,7 @@ sio.onConnection = function(socket) {
         socket.on("sendMessage", async function(data) {
 
             let now = new Date();
-            // TODO: DONT REMOVE HTML HERE DO IT ON THE CLIENT
-            let content = util.removeHTML(data.content);
+            let content = data.content;
             let chatId = data.chatId;
 
             let message;
@@ -194,8 +193,6 @@ sio.onConnection = function(socket) {
                 WHERE user_id = $1 and chat_id = $2
             `, [sess.id, chatId]);
         });
-
-        // TODO: if a user has multiple clients and sends a message, display sent message on all clients
 
         socket.on("get clients", function() {
             socket.emit("get clients", Object.keys(onlineClients).map(str => parseInt(str)));

@@ -28,7 +28,7 @@ function chatPage(chatId) {
         socket.off("start typing");
         socket.off("stop typing");
     }
-    socket = io("https://" + localStorage.server, {
+    socket = io(getServerUrl(), {
         transportOptions: {
             polling: {
                 extraHeaders: {
@@ -54,6 +54,18 @@ function chatPage(chatId) {
     function sanitizeHTML(html) {
         let regex = /<(?!(a\s|\/))/g;
         return DOMPurify.sanitize(html.replace(regex, "&lt;"));
+    }
+
+    function formatForHtml(text) {
+        let replacements = [
+            [/&/g, "&amp;"],
+            [/</g, "&lt;"],
+            [/>/g, "&gt;"]
+        ];
+        for (let replacement of replacements) {
+            text = text.replace(replacement[0], replacement[1]);
+        }
+        return text;
     }
 
     // there is no pressing need to add messages loaded over HTTP to the message list
@@ -129,7 +141,7 @@ function chatPage(chatId) {
         }
         let pendingElem = tag("div", {className: "bubble-wrapper"}, [
             tag("div", {className: "chat-bubble self-bubble chat-pending-message"}, [
-                tag("span", {innerHTML: sanitizeHTML(Autolinker.link(content))}, []),
+                tag("span", {innerHTML: sanitizeHTML(Autolinker.link(formatForHtml(content)))}, []),
             ]),
         ]);
         chatMessagesTable.insertBefore(pendingElem, typingIndicator);
@@ -210,7 +222,7 @@ function chatPage(chatId) {
         if (message.author.id == currentUser.id) {
             return tag("div", {className: "bubble-wrapper"}, [
                 tag("div", {className: "chat-bubble self-bubble"}, [
-                    tag("span", {innerHTML: sanitizeHTML(Autolinker.link(message.content))}, []),
+                    tag("span", {innerHTML: sanitizeHTML(Autolinker.link(formatForHtml(message.content)))}, []),
                 ]),
             ]);
         } else {
@@ -220,7 +232,7 @@ function chatPage(chatId) {
                     tag("p", {className: "chat-opponent"}, [
                         message.author.firstname + " " + message.author.lastname[0] + ":",
                     ]),
-                    tag("span", {innerHTML: sanitizeHTML(Autolinker.link(message.content))}, []),
+                    tag("span", {innerHTML: sanitizeHTML(Autolinker.link(formatForHtml(message.content)))}, []),
                 ]),
             ]);
         }

@@ -1,7 +1,7 @@
 function httpRequest(method, path, data) {
     return new Promise((resolve, reject) => {
         method = method.toUpperCase();
-        let url = "https://" + localStorage.server + "/api" + path;
+        let url = getServerUrl() + "/api" + path;
         if (method == "GET" && data) {
             let queryString = "";
             for (let key of Object.keys(data)) {
@@ -34,6 +34,14 @@ function httpRequest(method, path, data) {
             xhr.send();
         }
     });
+}
+
+function getServerUrl() {
+    let protocol = "https";
+    if (localStorage.server.match(/(^|\.)localhost(:\d+)?$/)) {
+        protocol = "http";
+    }
+    return protocol + "://" + localStorage.server;
 }
 
 function tag(name, props, children) {
