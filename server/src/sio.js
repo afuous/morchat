@@ -185,6 +185,7 @@ sio.onConnection = function(socket) {
         });
 
         socket.on("read message", async function(data) {
+
             let chatId = data.chatId;
 
             await db.queryOne(`
@@ -192,6 +193,11 @@ sio.onConnection = function(socket) {
                 SET unread_messages = 0
                 WHERE user_id = $1 and chat_id = $2
             `, [sess.id, chatId]);
+
+            emitToUsers([sess.id], "mark-messages-read", {
+                chatId: chatId,
+            }, socket);
+
         });
 
         socket.on("get clients", function() {

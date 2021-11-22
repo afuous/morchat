@@ -59,7 +59,7 @@ function typecheck(model, obj) {
         if (Array.isArray(model)) {
             return Array.isArray(obj) && obj.every(x => typecheck(model[0], x));
         } else {
-            return typeof obj === "object"
+            return typeof obj === "object" && obj != null
                 && Object.keys(model).every(key => typecheck(model[key], obj[key]));
         }
     } else {

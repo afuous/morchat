@@ -165,6 +165,11 @@ export const stopTyping = () => (dispatch, getState) => {
     });
 }
 
+export const markMessagesRead = ({ chatId }) => ({
+    type: "MARK_MESSAGES_READ",
+    chatId,
+})
+
 export const pageClose = () => (dispatch) => {
     dispatch(stopTyping());
 }

@@ -6,6 +6,7 @@ import {
     addChatSync,
     deleteChatSync,
     setChatNameSync,
+    markMessagesRead,
 } from "./actions";
 
 export function initListeners(socket, dispatch) {
@@ -50,6 +51,10 @@ export function initListeners(socket, dispatch) {
 
     socket.on("renameChat", ({ chatId, name }) => {
         dispatch(setChatNameSync({ chatId, name }));
+    });
+
+    socket.on("mark-messages-read", ({ chatId }) => {
+        dispatch(markMessagesRead({ chatId }));
     });
 
     $(window).unload(() => {
