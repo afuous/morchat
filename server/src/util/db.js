@@ -1,13 +1,6 @@
 "use strict";
 
-// let config = require("./config");
-let config = {
-    dbHost: "localhost",
-    dbPort: 5432,
-    dbUsername: "morchat",
-    dbPassword: "morchat",
-    dbName: "morchat",
-};
+let config = require("./config");
 
 let pool = new (require("pg").Pool)({
     host: config.dbHost,

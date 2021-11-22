@@ -6,10 +6,10 @@ MorChat is a derivative of [MorTeam](https://github.com/mortorqrobotics/morteam-
 
 ## How to run
 
-1. Install node.js, npm, and mongodb (3.6 or later).
+1. Install node.js, npm, and PostgreSQL.
 2. Run `npm install` in `server` and `web`.
 3. Run `npm run build` in `web`.
-4. Ensure that a mongodb server is running.
+4. Ensure that a PostgreSQL server is running, and run the migration script `server/initpg.sh`.
 5. To start the server, run `sudo npm start` in `server`.
 
 ## Config
@@ -17,7 +17,7 @@ MorChat is a derivative of [MorTeam](https://github.com/mortorqrobotics/morteam-
 The server configuration file is `server/config.json` and is automatically generated after running the server once.
 - `sessionSecret`: Change this to a random string and keep it secret.
 - `host`: The host visitors will be visiting in their browser, for cookie purposes. Probably best to keep this empty.
-- `dbHost`, `dbPort`, `dbName`: To specify the location of the mongodb server.
+- `dbHost`, `dbPort`, `dbName`, `dbUsername`, `dbPassword`: To specify access to the database. The `server/initpg.sh` script will not work verbatim if these are changed.
 - `fcmServerKey`: See push notifications below. Keeping this empty is fine but there will be no push notifications.
 
 The web client configuration file is `web/src/config.json` and is automatically generated after running npm install in `web`.

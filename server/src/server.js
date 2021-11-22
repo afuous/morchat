@@ -8,7 +8,6 @@ let bodyParser = require("body-parser");
 let compression = require("compression");
 let util = require("./util");
 let sio = require("./sio");
-let config = require("./util/config");
 let db = require("./util/db");
 
 // main app that is exported

@@ -2,9 +2,16 @@
 
 set -e # exit on error
 
-# TODO: if the database already exists, exit with an error instead of just deleting it
+exists="$(psql -U postgres -tAc "select 1 from pg_database where datname = 'morchat'")"
+if [[ "$exists" = '1' ]]; then
+	>&2 echo 'MorChat database already exists. To drop the database, run:'
+	>&2 echo
+	>&2 echo '	psql -U postgres -c "DROP DATABASE morchat;"'
+	>&2 echo
+	exit 1
+fi
 
-psql -U postgres -c "DROP DATABASE IF EXISTS morchat;"
+# psql -U postgres -c "DROP DATABASE IF EXISTS morchat;"
 psql -U postgres -c "DROP USER IF EXISTS morchat;"
 psql -U postgres -c "CREATE USER morchat WITH PASSWORD 'morchat';"
 psql -U postgres -c "CREATE DATABASE morchat OWNER morchat;"
