@@ -155,6 +155,7 @@ function chatPage(chatId) {
             content: content,
         });
         chatInput.value = "";
+        setChatInputRows();
         chatInput.focus();
     }
 
@@ -163,10 +164,19 @@ function chatPage(chatId) {
 
     let chatInput = tag("textarea", {className: "chat-input-textarea", rows: "1", onkeydown: (event) => {
         if (!event.shiftKey && event.which == 13) { // enter key
+            // TODO: dont do this on mobile
             event.preventDefault();
             onSubmit();
         }
     }});
+
+    function setChatInputRows() {
+        chatInput.style.height = "0px";
+        chatInput.rows = Math.min(6, Math.floor(chatInput.scrollHeight / 17));
+        chatInput.style.height = "";
+        scrollOnResize();
+    }
+    chatInput.oninput = setChatInputRows;
 
     let typingIndicator = tag("div", {className: "bubble-wrapper"}, [
         tag("div", {className: "chat-bubble other-bubble"}, [
@@ -181,12 +191,13 @@ function chatPage(chatId) {
     requestAnimationFrame(function() {
         lastChatMessagesHeight = chatMessages.clientHeight;
     });
-    window.onresize = function() {
+    function scrollOnResize() {
         if (chatMessages.clientHeight < lastChatMessagesHeight) {
             chatMessages.scrollTop += lastChatMessagesHeight - chatMessages.clientHeight;
         }
         lastChatMessagesHeight = chatMessages.clientHeight;
     };
+    window.onresize = scrollOnResize;
 
     let loadingMessages = false;
     let allMessagesLoaded = false;

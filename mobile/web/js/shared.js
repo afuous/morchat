@@ -38,7 +38,10 @@ function httpRequest(method, path, data) {
 
 function getServerUrl() {
     let protocol = "https";
-    if (localStorage.server.match(/(^|\.)localhost(:\d+)?$/)) {
+    if (
+        localStorage.server.match(/(^|\.)localhost(:\d+)?$/)
+        || localStorage.server.match(/^\d+\.\d+\.\d+\.\d+(:\d+)?$/)
+    ) {
         protocol = "http";
     }
     return protocol + "://" + localStorage.server;
