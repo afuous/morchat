@@ -68,6 +68,24 @@ function chatPage(chatId) {
         return text;
     }
 
+    function addLinks(text) {
+        return Autolinker.link(text, {
+            newWindow: true,
+            urls: true,
+            email: false,
+            phone: false,
+            mention: false,
+            hashtag: false,
+            stripPrefix: false,
+            stripTrailingSlash: false,
+            decodePercentEncoding: false,
+        });
+    }
+
+    function getLinkifiedHtml(text) {
+        return sanitizeHTML(addLinks(formatForHtml(text)));
+    }
+
     // there is no pressing need to add messages loaded over HTTP to the message list
     // for now this array will only contain messages sent or received in this session
     let messageList = [];
@@ -141,7 +159,7 @@ function chatPage(chatId) {
         }
         let pendingElem = tag("div", {className: "bubble-wrapper"}, [
             tag("div", {className: "chat-bubble self-bubble chat-pending-message"}, [
-                tag("span", {innerHTML: sanitizeHTML(Autolinker.link(formatForHtml(content)))}, []),
+                tag("span", {innerHTML: getLinkifiedHtml(content)}, []),
             ]),
         ]);
         chatMessagesTable.insertBefore(pendingElem, typingIndicator);
@@ -233,7 +251,7 @@ function chatPage(chatId) {
         if (message.author.id == currentUser.id) {
             return tag("div", {className: "bubble-wrapper"}, [
                 tag("div", {className: "chat-bubble self-bubble"}, [
-                    tag("span", {innerHTML: sanitizeHTML(Autolinker.link(formatForHtml(message.content)))}, []),
+                    tag("span", {innerHTML: getLinkifiedHtml(message.content)}, []),
                 ]),
             ]);
         } else {
@@ -243,7 +261,7 @@ function chatPage(chatId) {
                     tag("p", {className: "chat-opponent"}, [
                         message.author.firstname + " " + message.author.lastname[0] + ":",
                     ]),
-                    tag("span", {innerHTML: sanitizeHTML(Autolinker.link(formatForHtml(message.content)))}, []),
+                    tag("span", {innerHTML: getLinkifiedHtml(message.content)}, []),
                 ]),
             ]);
         }
