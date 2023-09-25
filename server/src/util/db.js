@@ -148,11 +148,11 @@ db.transactionSerializable = async function(func) {
             await client.query("COMMIT");
             break;
         } catch (e) {
+            await client.query("ROLLBACK");
             if (typeof(e) == "object" && e !== null && e.code == "40001") { // serialization failure
                 // TODO: log this, i am curious how much it actually happens
                 continue;
             }
-            await client.query("ROLLBACK");
             throw e;
         } finally {
             client.release();
