@@ -10,7 +10,6 @@ let defaultConfig = {
     dbUsername: "morchat",
     dbPassword: "morchat",
     dbName: "morchat",
-    fcmServerKey: "",
 };
 
 let configPath = require("path").join(__dirname, "../../config.json");

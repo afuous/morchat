@@ -179,7 +179,7 @@ sio.onConnection = function(socket) {
 
             // push notifications
             for (let obj of unreadMessageCounts) {
-                util.fcm.sendNotification(obj.token, obj.totalUnread);
+                void util.fcm.sendNotification(obj.token, obj.totalUnread);
             }
 
         });

@@ -29,4 +29,4 @@ In `mobile/web`, run `build.sh` to produce a standalone html file `build.html` c
 
 ## Push notifications
 
-To get push notifications working, first create a project in Firebase. Download `google-services.json` from [here](https://console.firebase.google.com/project/_/settings/general/) and put it in `mobile/app/android/app/google-services.json`. Copy the server key from [here](https://console.firebase.google.com/project/_/settings/cloudmessaging/) and put it in the `fcmServerKey` field of `server/config.json`.
+To get push notifications working, first create a project in Firebase. Download `google-services.json` from [here](https://console.firebase.google.com/project/_/settings/general/) and move the file to `mobile/app/android/app/google-services.json`. Download a service account key from [here](https://console.firebase.google.com/project/_/settings/serviceaccounts/adminsdk) (click "Generate new private key") and move the file to `server/googleServiceAccountKey.json`.
