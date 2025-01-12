@@ -10,6 +10,8 @@ let defaultConfig = {
     dbUsername: "morchat",
     dbPassword: "morchat",
     dbName: "morchat",
+    morimgBaseUrl: "",
+    morimgAuthToken: "",
 };
 
 let configPath = require("path").join(__dirname, "../../config.json");

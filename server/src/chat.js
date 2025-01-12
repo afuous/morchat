@@ -10,6 +10,7 @@ let checkBody = util.middlechecker.checkBody;
 let types = util.middlechecker.types;
 let HttpError = util.HttpError;
 let db = util.db;
+let config = util.config;
 
 
 async function getChat(chatId, userId, client) {
@@ -256,7 +257,7 @@ router.put("/chats/id/:chatId/name", checkBody({
 
 }));
 
-router.get("/chats/id/:chatId/log", handler(async function(req, res) {
+router.get("/chats/id/:chatId/log", requireLogin, handler(async function(req, res) {
 
     function pad(n) {
         if (n < 10) {
@@ -337,6 +338,27 @@ router.get("/chats/id/:chatId/log", handler(async function(req, res) {
 
     res.end();
 
+}));
+
+router.post("/generateMorimgUploadUrl", requireLogin, handler(async function(req, res) {
+    if (!config.morimgBaseUrl) {
+        throw new Error("missing morimg configuration");
+    }
+    const response = await fetch(config.morimgBaseUrl + "/generateUploadUrlEnding", {
+        method: "POST",
+        headers: {
+            "Authorization": "Bearer " + config.morimgAuthToken,
+        },
+    });
+    if (!response.ok) {
+        throw new Error("morimg error " + response.status + ": " + await response.text());
+    }
+    const json = await response.json();
+    const uploadUrl = config.morimgBaseUrl + json.urlEnding;
+    res.json({
+        baseUrl: config.morimgBaseUrl,
+        uploadUrl,
+    });
 }));
 
 module.exports = router;

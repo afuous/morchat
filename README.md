@@ -20,9 +20,6 @@ The server configuration file is `server/config.json` and is automatically gener
 - `dbHost`, `dbPort`, `dbName`, `dbUsername`, `dbPassword`: To specify access to the database. The `server/initpg.sh` script will not work verbatim if these are changed.
 - `fcmServerKey`: See push notifications below. Keeping this empty is fine but there will be no push notifications.
 
-The web client configuration file is `web/src/config.json` and is automatically generated after running npm install in `web`.
-- `imgurClientId`: Change this to your Imgur API client id if you want to integrate Imgur uploads to the chat.
-
 ## Mobile
 
 In `mobile/web`, run `build.sh` to produce a standalone html file `build.html` containing the mobile website. For testing, use `test.html` without any building necessary.

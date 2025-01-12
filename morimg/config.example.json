@@ -1,0 +1,5 @@
+{
+	"dataDirectory": "data",
+	"maxFileSizeMB": 10,
+	"authTokens": []
+}

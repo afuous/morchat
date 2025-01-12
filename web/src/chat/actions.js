@@ -3,7 +3,6 @@ import { request } from "~/util/ajax";
 import { emit } from "~/util/sio";
 import { receiveMessage as receiveMessageShared } from "~/shared/actions";
 import { currentUser, getRandomString, notify } from "~/util";
-import { imgurClientId } from "~/config.json";
 
 export const addChatSync = (chat) => ({
     type: "ADD_CHAT_SUCCESS",
@@ -97,9 +96,10 @@ export const setChatName = ({ chatId, name }) => async (dispatch) => {
 
 export const uploadImage = (image) => async (dispatch) => {
     const formData = new FormData();
-    formData.append("image", image);
-    const { data } = await axios.post(`https://api.imgur.com/3/image?client_id=${imgurClientId}`, formData);
-    const link = data.data.link;
+    formData.append("file", image);
+    const { data: { baseUrl, uploadUrl } } = await request("POST", "/generateMorimgUploadUrl");
+    const { data } = await axios.post(uploadUrl, formData);
+    const link = baseUrl + data.path;
     notify("Click to send link", link, () => dispatch(sendMessage(link)), true);
 }
 
