@@ -11,7 +11,7 @@
     "watch": "./node_modules/.bin/gulp watch",
     "vendor": "./node_modules/.bin/gulp vendor",
     "vendor-prod": "NODE_ENV=production ./node_modules/.bin/gulp vendor",
-    "postinstall": "npm run vendor; [ -e src/config.json ] || echo '{\"imgurClientId\":\"\"}' > src/config.json",
+    "postinstall": "npm run vendor",
     "trailing": "find src -name '*.js' -o -name '*.json' | xargs -n1 sed -i -e 's/\\s\\+$//'"
   },
   "dependencies": {

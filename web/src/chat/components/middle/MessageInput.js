@@ -49,6 +49,17 @@ class MessageInput extends React.Component {
         }
     }
 
+    handlePaste = (event) => {
+        const clipboardItem = event.clipboardData.items[0];
+        if (clipboardItem == null) {
+            return;
+        }
+        const { kind, type } = clipboardItem;
+        if (kind == "file" && type.startsWith("image/")) {
+            this.setImagePreviewFile(clipboardItem.getAsFile());
+        }
+    }
+
     handleChange = (event) => {
 
         // without this line, if it expands to a certain number of lines it
@@ -119,6 +130,7 @@ class MessageInput extends React.Component {
                             this.state.numRows > maxRowsShown ? { overflowY: "scroll", overflowX: "hidden" } : {},
                         ]}
                         onKeyDown={this.handleKeyDown}
+                        onPaste={this.handlePaste}
                         value={this.state.content}
                         onChange={this.handleChange}
                         refFunc={element => this.chatInputElement = element}
