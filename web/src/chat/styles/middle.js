@@ -153,3 +153,34 @@ export const chatItem = {
         fontFamily: "'exo 2', sans-serif",
     },
 }
+
+export const imagePreview = {
+    container: {
+        height: "100%",
+        maxHeight: "100%",
+        display: "flex",
+        flexDirection: "column",
+    },
+    imageContainer: {
+        flex: "1",
+        minHeight: "0px",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center"
+    },
+    image: {
+        maxWidth: "100%",
+        maxHeight: "100%",
+    },
+    buttonContainer: {
+        display:"flex",
+        flexDirection:"row",
+        justifyContent:"center",
+    },
+    button: {
+        width: "100px",
+        marginTop: "20px",
+        marginLeft: "20px",
+        marginRight: "20px",
+    },
+}

@@ -94,15 +94,6 @@ export const setChatName = ({ chatId, name }) => async (dispatch) => {
     // chat is renamed by socketio
 }
 
-export const uploadImage = (image) => async (dispatch) => {
-    const formData = new FormData();
-    formData.append("file", image);
-    const { data: { baseUrl, uploadUrl } } = await request("POST", "/generateMorimgUploadUrl");
-    const { data } = await axios.post(uploadUrl, formData);
-    const link = baseUrl + data.path;
-    notify("Click to send link", link, () => dispatch(sendMessage(link)), true);
-}
-
 export const setCurrentChatId = (chatId) => (dispatch) => {
     localStorage.selectedChatId = chatId;
     dispatch({

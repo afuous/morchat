@@ -6,6 +6,7 @@ import Form from "~/shared/components/forms/Form";
 import TextArea from "~/shared/components/forms/TextArea";
 import SubmitButton from "~/shared/components/forms/SubmitButton";
 import ImageUpload from "~/chat/components/middle/ImageUpload";
+import ImagePreview from "~/chat/components/middle/ImagePreview";
 import styles from "~/chat/styles/middle";
 import {
     sendMessage,
@@ -22,6 +23,7 @@ class MessageInput extends React.Component {
     initialState = {
         content: "",
         numRows: 1,
+        imagePreviewFile: null,
     }
     state = this.initialState;
 
@@ -80,11 +82,33 @@ class MessageInput extends React.Component {
 
     }
 
+    setImagePreviewFile = (file) => {
+        this.setState({
+            imagePreviewFile: file,
+        });
+    }
+
+    handleSendImage = (url) => {
+        this.props.dispatch(sendMessage(url));
+        if (this.chatInputElement) {
+            this.chatInputElement.focus();
+        }
+    }
+
     render() {
         return (
             <div style={styles.inputDiv}>
                 <Form onSubmit={this.handleSend} style={{ marginBottom: "0" }}>
-                    <ImageUpload />
+                    <ImageUpload
+                        onSelectFile={this.setImagePreviewFile}
+                    />
+                    <ImagePreview
+                        file={this.state.imagePreviewFile}
+                        isOpen={this.state.imagePreviewFile != null}
+                        onAfterOpen={() => {}}
+                        onRequestClose={() => this.setState({ imagePreviewFile: null })}
+                        onSubmit={this.handleSendImage}
+                    />
                     <TextArea
                         autoFocus
                         id="chat-input"
@@ -97,6 +121,7 @@ class MessageInput extends React.Component {
                         onKeyDown={this.handleKeyDown}
                         value={this.state.content}
                         onChange={this.handleChange}
+                        refFunc={element => this.chatInputElement = element}
                     />
                     <SubmitButton
                         style={styles.sendButton}

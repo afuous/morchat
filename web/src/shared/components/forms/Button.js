@@ -2,7 +2,7 @@ import React from "react";
 import Radium from "radium";
 
 const Button = (props) => {
-    let { text, style, ...rest } = props;
+    let { text, style, refFunc, ...rest } = props;
     return React.createElement("input", {
         type: "button",
         value: text,
@@ -10,6 +10,7 @@ const Button = (props) => {
             outline: "none",
             border: "none",
         }],
+        ...(refFunc == null ? {} : { ref: refFunc }),
         ...rest,
     })
 }

@@ -6,13 +6,16 @@ import TextArea from "~/shared/components/forms/TextArea";
 import Glyphicon from "react-bootstrap/lib/Glyphicon";
 import styles from "~/chat/styles/middle";
 
-import { uploadImage } from "~/chat/actions";
 import { connect } from "react-redux";
 
 const RadiumGlyphicon = Radium(Glyphicon);
 
 @Radium
 class ImageUpload extends React.Component {
+
+    static propTypes = {
+        onSelectFile: React.PropTypes.func.isRequired,
+    }
 
     render() {
         return (
@@ -26,7 +29,7 @@ class ImageUpload extends React.Component {
                     style={{ display: "none" }}
                     id="fileUpload"
                     accept="image/*"
-                    onChange={(event) => this.props.dispatch(uploadImage(event.target.files[0]))}
+                    onChange={(event) => this.props.onSelectFile(event.target.files[0])}
                 />
             </div>
         )
