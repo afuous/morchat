@@ -199,6 +199,33 @@ router.get("/chats/id/:chatId/messages", checkBody({
 
 }));
 
+router.get("/chats/id/:chatId/messages/ascending", checkBody({
+    skip: types.string,
+    count: types.string,
+}), requireLogin, handler(async function(req, res) {
+
+    let skip = parseInt(req.query.skip);
+    let count = Math.max(0, Math.min(1000, parseInt(req.query.count)));
+
+    let messages = await db.transaction(async client => {
+
+        let chat = await getChat(req.params.chatId, req.user.id, client);
+
+        return await db.queryAllCollectUser("author", `
+            SELECT chat_messages.*, ${db.aliasUserJoin("author")}
+            FROM chat_messages, users
+            WHERE chat_messages.chat_id = $1 AND chat_messages.author_id = users.id
+            ORDER BY created_at ASC
+            OFFSET $2
+            LIMIT $3
+        `, [chat.id, skip, count], client);
+
+    });
+
+    res.json(messages);
+
+}));
+
 router.get("/chats/id/:chatId/users", checkBody(), requireLogin, handler(async function(req, res) {
 
     let users = await db.transaction(async client => {
