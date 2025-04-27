@@ -18,6 +18,11 @@ class ImagePreview extends React.Component {
         onSubmit: React.PropTypes.func.isRequired,
     }
 
+    initialState = {
+        isSending: false,
+    }
+    state = this.initialState;
+
     componentDidUpdate = (prevProps, prevState) => {
         if (!prevProps.file && this.props.file) {
             // needs delay to wait for the ref to be obtained
@@ -30,6 +35,11 @@ class ImagePreview extends React.Component {
     }
 
     handleSend = async () => {
+        if (this.state.isSending) {
+            return;
+        }
+        this.setState({ isSending: true });
+
         const formData = new FormData();
         formData.append("file", this.props.file);
         const { data: { baseUrl, uploadUrl } } = await request("POST", "/generateMorimgUploadUrl");
@@ -60,6 +70,7 @@ class ImagePreview extends React.Component {
                             <ModalButton
                                 text="Send"
                                 onClick={this.handleSend}
+                                disabled={this.state.isSending}
                                 style={styles.button}
                                 refFunc={element => this.sendButtonElement = element}
                             />

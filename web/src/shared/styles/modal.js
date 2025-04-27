@@ -30,6 +30,10 @@ export default {
         ":hover": {
             backgroundColor: selectedColor,
         },
+        ":disabled": {
+            color: "#aaaaaa",
+            backgroundColor: "#ffe2a3",
+        },
     }],
     errorMsg: {
         width: "100%",
