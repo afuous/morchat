@@ -46,6 +46,7 @@ class ImagePreview extends React.Component {
         const { data: { path } } = await axios.post(uploadUrl, formData);
         const url = baseUrl + path;
         this.props.onSubmit(url);
+        this.setState({ isSending: false });
         this.props.onRequestClose();
     }
 
