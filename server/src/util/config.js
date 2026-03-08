@@ -6,7 +6,7 @@ let defaultConfig = {
     sessionSecret: "secret",
     host: "",
     dbHost: "localhost",
-    dbPort: 5432,
+    dbPort: 5433,
     dbUsername: "morchat",
     dbPassword: "morchat",
     dbName: "morchat",

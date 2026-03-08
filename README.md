@@ -6,10 +6,11 @@ MorChat is a derivative of [MorTeam](https://github.com/mortorqrobotics/morteam-
 
 ## How to run
 
-1. Install node.js, npm, and PostgreSQL.
+1. Install node.js, npm, docker, and docker-compose.
 2. Run `npm install` in `server` and `web`.
 3. Run `npm run build` in `web`.
-4. Ensure that a PostgreSQL server is running, and run the migration script `server/initpg.sh`.
+4. Run `docker-compose up` in `server/db`.
+5. Run the migration script `server/db/initpg.sh`.
 5. To start the server, run `sudo npm start` in `server`.
 
 ## Config
@@ -17,7 +18,7 @@ MorChat is a derivative of [MorTeam](https://github.com/mortorqrobotics/morteam-
 The server configuration file is `server/config.json` and is automatically generated after running the server once.
 - `sessionSecret`: Change this to a random string and keep it secret.
 - `host`: The host visitors will be visiting in their browser, for cookie purposes. Probably best to keep this empty.
-- `dbHost`, `dbPort`, `dbName`, `dbUsername`, `dbPassword`: To specify access to the database. The `server/initpg.sh` script will not work verbatim if these are changed.
+- `dbHost`, `dbPort`, `dbName`, `dbUsername`, `dbPassword`: To specify access to the database.
 - `fcmServerKey`: See push notifications below. Keeping this empty is fine but there will be no push notifications.
 
 ## Mobile
