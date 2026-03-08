@@ -1,6 +1,6 @@
 services:
   morchat-db:
-    image: docker.io/library/postgres:18
+    image: docker.io/library/postgres:18-alpine
     volumes:
       - ./pg-data:/var/lib/postgresql
     environment:
