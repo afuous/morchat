@@ -1,7 +1,7 @@
 "use strict";
 
 let fs = require("fs");
-let googleapis = require("googleapis");
+let googleAuth = require("google-auth-library");
 let config = require("./config");
 
 let fcm = {};
@@ -11,13 +11,11 @@ let googleServiceAccountKey = null;
 let jwtClient = null;
 if (fs.existsSync(googleServiceAccountKeyPath)) {
     googleServiceAccountKey = JSON.parse(fs.readFileSync(googleServiceAccountKeyPath));
-    jwtClient = new googleapis.google.auth.JWT(
-        googleServiceAccountKey.client_email,
-        null,
-        googleServiceAccountKey.private_key,
-        ["https://www.googleapis.com/auth/firebase.messaging"],
-        null
-    );
+    jwtClient = new googleAuth.JWT({
+        email: googleServiceAccountKey.client_email,
+        key: googleServiceAccountKey.private_key,
+        scopes: ["https://www.googleapis.com/auth/firebase.messaging"],
+    });
 }
 
 fcm.sendNotification = async function(mobileDeviceToken, numUnread) {
